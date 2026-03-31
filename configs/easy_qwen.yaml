@@ -1,5 +1,5 @@
 seed: 20260331
-iterations: 8
+iterations: 24
 personalities_dir: personalities
 paths:
   output_root: artifacts
@@ -11,8 +11,8 @@ paths:
 backend:
   provider: ollama
   base_url: http://127.0.0.1:11434
-  model_name: qwen3.5:4b
-  timeout_seconds: 180.0
+  model_name: qwen3.5:9b
+  timeout_seconds: 300.0
   temperature: 0.0
 selection:
   epsilon: 0.10
@@ -60,5 +60,5 @@ scenario_mix:
   trap: 0.10
   constraint_heavy: 0.10
 analysis:
-  aggregate_every: 4
+  aggregate_every: 6
   generate_after_run: true

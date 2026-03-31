@@ -7,7 +7,7 @@ This file explains exactly how to install the project and run it on a fresh mach
 - Python: `3.11`
 - Conda: any recent Miniconda or Anaconda
 - Ollama: required for the local model backend
-- Model used by the project: `qwen3.5:4b`
+- Model used by the project: `qwen3.5:9b`
 
 ## 1. Clone The Repository
 
@@ -53,7 +53,7 @@ ollama --version
 Pull the exact model used by the configs:
 
 ```powershell
-ollama pull qwen3.5:4b
+ollama pull qwen3.5:9b
 ```
 
 Verify it exists:
@@ -84,7 +84,7 @@ Why this config:
 - fewer move types
 - more solvable tasks
 - fewer trap and constraint-heavy tasks
-- same model: `qwen3.5:4b`
+- same model: `qwen3.5:9b`
 
 ## 7. Run The Experiment
 
@@ -149,7 +149,7 @@ python -m llm_personality_experiment.cli analyze --run-dir artifacts\runs\<run_i
 Fix:
 
 ```powershell
-ollama pull qwen3.5:4b
+ollama pull qwen3.5:9b
 ```
 
 ### Ollama not running
