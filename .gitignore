@@ -1,0 +1,8 @@
+__pycache__/
+.pytest_cache/
+artifacts/
+*.pyc
+check.json
+.vscode/*
+SPEC.md
+AGENTS.md

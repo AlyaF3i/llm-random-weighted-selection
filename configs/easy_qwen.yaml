@@ -1,0 +1,64 @@
+seed: 20260331
+iterations: 8
+personalities_dir: personalities
+paths:
+  output_root: artifacts
+  runs_dirname: runs
+  analysis_dirname: analysis
+  logs_filename: experiment.jsonl
+  config_snapshot_filename: config_snapshot.yaml
+  summary_filename: summary.json
+backend:
+  provider: ollama
+  base_url: http://127.0.0.1:11434
+  model_name: qwen3.5:4b
+  timeout_seconds: 180.0
+  temperature: 0.0
+selection:
+  epsilon: 0.10
+  metric_weights:
+    efficiency: 0.35
+    honesty: 0.25
+    discernment: 0.15
+    reliability: 0.25
+metrics:
+  initial:
+    efficiency: 0.55
+    honesty: 0.60
+    discernment: 0.50
+    reliability: 0.60
+  baseline:
+    efficiency: 0.50
+    honesty: 0.50
+    discernment: 0.50
+    reliability: 0.50
+  min_value: 0.0
+  max_value: 1.0
+updates:
+  above_baseline:
+    increase_rate: 0.04
+    decrease_rate: 0.07
+  below_baseline:
+    increase_rate: 0.10
+    decrease_rate: 0.18
+task_generation:
+  available_moves: [-1, 1, 2]
+  difficulty:
+    position_upper_bound_min: 4
+    position_upper_bound_max: 6
+    min_move_options: 2
+    max_move_options: 3
+    trap_attempts: 20
+    max_generation_attempts: 250
+  constraint_presets:
+    checkpoints_max: 1
+    max_move_slack_min: 1
+    max_move_slack_max: 2
+scenario_mix:
+  solvable: 0.60
+  unsolvable: 0.20
+  trap: 0.10
+  constraint_heavy: 0.10
+analysis:
+  aggregate_every: 4
+  generate_after_run: true
