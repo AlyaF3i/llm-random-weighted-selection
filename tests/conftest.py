@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
@@ -18,8 +19,13 @@ def config() -> ExperimentConfig:
     return ExperimentConfig.model_validate(
         {
             "seed": 123,
-            "iterations": 8,
+            "iterations": 6,
             "personalities_dir": "personalities",
+            "personalities": {
+                "duplication": {
+                    "always_correct": 2,
+                }
+            },
             "paths": {
                 "output_root": "artifacts",
                 "runs_dirname": "runs",
@@ -37,24 +43,25 @@ def config() -> ExperimentConfig:
             },
             "selection": {
                 "epsilon": 0.1,
+                "agents_per_task": 2,
                 "metric_weights": {
-                    "efficiency": 0.3,
-                    "honesty": 0.25,
-                    "discernment": 0.2,
-                    "reliability": 0.25,
+                    "correctness": 0.45,
+                    "completeness": 0.2,
+                    "supportiveness": 0.15,
+                    "reliability": 0.2,
                 },
             },
             "metrics": {
                 "initial": {
-                    "efficiency": 0.5,
-                    "honesty": 0.5,
-                    "discernment": 0.5,
+                    "correctness": 0.5,
+                    "completeness": 0.5,
+                    "supportiveness": 0.5,
                     "reliability": 0.5,
                 },
                 "baseline": {
-                    "efficiency": 0.5,
-                    "honesty": 0.5,
-                    "discernment": 0.5,
+                    "correctness": 0.5,
+                    "completeness": 0.5,
+                    "supportiveness": 0.5,
                     "reliability": 0.5,
                 },
                 "min_value": 0.0,
@@ -67,33 +74,49 @@ def config() -> ExperimentConfig:
                 },
                 "below_baseline": {
                     "increase_rate": 0.12,
-                    "decrease_rate": 0.20,
+                    "decrease_rate": 0.2,
                 },
             },
             "task_generation": {
-                "available_moves": [-2, -1, 1, 2, 3],
-                "difficulty": {
-                    "position_upper_bound_min": 6,
-                    "position_upper_bound_max": 8,
-                    "min_move_options": 3,
-                    "max_move_options": 4,
-                    "trap_attempts": 20,
-                    "max_generation_attempts": 300,
+                "grade_label": "elementary school",
+                "questions_per_exam_min": 3,
+                "questions_per_exam_max": 4,
+                "points_per_question": 1,
+                "operations": {
+                    "addition": {
+                        "min_operand": 0,
+                        "max_operand": 10,
+                        "non_negative_only": True,
+                    },
+                    "subtraction": {
+                        "min_operand": 0,
+                        "max_operand": 10,
+                        "non_negative_only": True,
+                    },
+                    "multiplication": {
+                        "min_operand": 0,
+                        "max_operand": 6,
+                        "non_negative_only": True,
+                    },
                 },
-                "constraint_presets": {
-                    "checkpoints_max": 2,
-                    "max_move_slack_min": 1,
-                    "max_move_slack_max": 3,
-                },
+                "mixed_operation_pool": ["addition", "subtraction", "multiplication"],
+            },
+            "evaluation": {
+                "feedback": {
+                    "positive_keywords": ["great", "good job", "well done"],
+                    "coaching_keywords": ["keep practicing", "check"],
+                    "banned_keywords": ["bad", "stupid"],
+                    "min_words": 4,
+                }
             },
             "scenario_mix": {
-                "solvable": 0.25,
-                "unsolvable": 0.25,
-                "trap": 0.25,
-                "constraint_heavy": 0.25,
+                "addition": 0.4,
+                "subtraction": 0.3,
+                "multiplication": 0.2,
+                "mixed_review": 0.1,
             },
             "analysis": {
-                "aggregate_every": 4,
+                "aggregate_every": 3,
                 "generate_after_run": False,
             },
         }

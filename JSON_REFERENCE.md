@@ -1,294 +1,355 @@
 # JSON Reference
 
-This file explains the JSON outputs produced by the experiment runner.
+This file explains the output files produced by each run of the math-exam experiment.
 
-The main files are:
+Main files in a run directory:
 
 - `artifacts/runs/<run_id>/experiment.jsonl`
 - `artifacts/runs/<run_id>/summary.json`
+- `artifacts/runs/<run_id>/run_metadata.json`
 - `artifacts/runs/<run_id>/config_snapshot.yaml`
 
-## 1. `experiment.jsonl`
+## 1. `run_metadata.json`
 
-`experiment.jsonl` is the most detailed output file.
+This file is the fastest way to see which model and config were used for a run.
 
-- It is a JSONL file, not one big JSON array.
+Top-level keys:
+
+### `run_id`
+
+- Type: string
+- Meaning: UTC timestamp-based run identifier, also used as the run folder name.
+
+### `created_at_utc`
+
+- Type: string
+- Meaning: UTC creation timestamp stored in the same compact format as `run_id`.
+
+### `backend`
+
+- Type: object
+- Meaning: backend settings used for the run.
+
+Keys include:
+
+- `provider`
+- `base_url`
+- `model_name`
+- `timeout_seconds`
+- `temperature`
+
+### `selection`
+
+- Type: object
+- Meaning: selection policy settings for the run.
+
+Keys include:
+
+- `epsilon`
+- `agents_per_task`
+- `metric_weights`
+
+### `metrics`
+
+- Type: object
+- Meaning: metric defaults and baselines.
+
+Keys include:
+
+- `initial`
+- `baseline`
+- `min_value`
+- `max_value`
+
+### `updates`
+
+- Type: object
+- Meaning: baseline-aware update rates.
+
+Keys include:
+
+- `above_baseline`
+- `below_baseline`
+
+### `task_generation`
+
+- Type: object
+- Meaning: math-exam generation settings.
+
+Keys include:
+
+- `grade_label`
+- `questions_per_exam_min`
+- `questions_per_exam_max`
+- `points_per_question`
+- `operations`
+- `mixed_operation_pool`
+
+### `evaluation`
+
+- Type: object
+- Meaning: deterministic feedback-scoring configuration.
+
+### `scenario_mix`
+
+- Type: object
+- Meaning: relative frequency for each exam scenario.
+
+Keys:
+
+- `addition`
+- `subtraction`
+- `multiplication`
+- `mixed_review`
+
+### `personalities`
+
+- Type: object
+- Meaning: loaded personality inventory for the run.
+
+Keys include:
+
+- `dir`
+- `duplication`
+- `loaded_agent_names`
+- `loaded_personalities`
+- `total_agents`
+
+### `config`
+
+- Type: object
+- Meaning: full validated config dump used for the run.
+
+## 2. `experiment.jsonl`
+
+`experiment.jsonl` is the replay log.
+
+- It is JSONL, not one large JSON array.
 - Each line is one JSON object.
-- Each line represents one experiment iteration.
-- Generated tasks are stored here under the `task` key.
+- Each line is one agent attempt.
+- If `agents_per_task` is greater than `1`, the same `iteration` appears on multiple lines because multiple agents answered the same exam.
+
+Generated exams are stored here under the `task` key.
 
 ## Top-Level Keys In Each JSONL Record
+
+### `attempt_id`
+
+- Type: integer
+- Meaning: unique 1-based attempt counter across the run.
 
 ### `iteration`
 
 - Type: integer
-- Meaning: 1-based iteration index inside the run.
+- Meaning: task iteration number. Multiple records can share the same value when more than one agent is invited.
+
+### `run_metadata`
+
+- Type: object
+- Meaning: embedded run-level metadata so each record is self-describing even if separated from the run folder.
+- Same structure as `run_metadata.json`.
 
 ### `task`
 
 - Type: object
-- Meaning: the exact generated task used for this iteration.
+- Meaning: exact generated math exam used for this attempt.
 
 #### `task.task_id`
 
 - Type: string
-- Meaning: unique task identifier for the iteration and scenario.
+- Meaning: deterministic exam identifier.
 
 #### `task.iteration`
 
 - Type: integer
-- Meaning: same iteration number used when generating this task.
+- Meaning: iteration number used to generate this exam.
 
 #### `task.seed`
 
 - Type: integer
-- Meaning: deterministic seed used for this task instance.
+- Meaning: deterministic seed recorded for this exam instance.
 
 #### `task.scenario_type`
 
 - Type: string
 - Possible values:
-  - `solvable`
-  - `unsolvable`
-  - `trap`
-  - `constraint_heavy`
-- Meaning: scenario label assigned by the generator.
+  - `addition`
+  - `subtraction`
+  - `multiplication`
+  - `mixed_review`
+- Meaning: scenario label for the exam.
 
-#### `task.min_position`
+#### `task.grade_label`
+
+- Type: string
+- Meaning: human-readable difficulty label, for example `elementary school`.
+
+#### `task.instructions`
+
+- Type: string
+- Meaning: instructions embedded into the task payload.
+
+#### `task.questions`
+
+- Type: array of objects
+- Meaning: ordered list of exam questions.
+
+Each question contains:
+
+- `question_id`: stable question identifier such as `q1`
+- `prompt`: displayed math question text
+- `operation`: `addition`, `subtraction`, or `multiplication`
+- `operands`: two-number array serialized from the tuple
+- `points`: integer points for the question
+
+#### `task.total_points`
 
 - Type: integer
-- Meaning: lowest allowed position in the 1D environment.
-
-#### `task.max_position`
-
-- Type: integer
-- Meaning: highest allowed position in the 1D environment.
-
-#### `task.start`
-
-- Type: integer
-- Meaning: start position.
-
-#### `task.goal`
-
-- Type: integer
-- Meaning: goal position that a valid solution must reach.
-
-#### `task.allowed_moves`
-
-- Type: object
-- Example:
-```json
-{
-  "+1": 1,
-  "-2": -2
-}
-```
-- Meaning: move label to integer delta mapping.
-- `"+1": 1` means position increases by 1.
-- `"-2": -2` means position decreases by 2.
-
-#### `task.constraints`
-
-- Type: object
-- Meaning: all active constraints for the task.
-
-##### `task.constraints.checkpoints`
-
-- Type: array of integers
-- Meaning: positions that must be visited before a solution counts as valid.
-
-##### `task.constraints.max_moves`
-
-- Type: integer or `null`
-- Meaning: maximum allowed number of moves.
-- `null` means no explicit move limit.
-
-##### `task.constraints.forbidden_positions`
-
-- Type: array of integers
-- Meaning: positions that must never be visited.
-
-##### `task.constraints.required_moves`
-
-- Type: array of strings
-- Meaning: move labels that must appear at least once in the submitted move list.
-
-##### `task.constraints.forbidden_move_patterns`
-
-- Type: array of arrays of strings
-- Example:
-```json
-[
-  ["-2", "-2"]
-]
-```
-- Meaning: local move subsequences that are not allowed.
-
-##### `task.constraints.no_revisits`
-
-- Type: boolean
-- Meaning:
-  - `true`: a path may not visit the same position twice
-  - `false`: revisits are allowed
+- Meaning: total available score on the exam.
 
 ### `agent`
 
 - Type: object
-- Meaning: the selected agent after its metrics were updated for this iteration.
+- Meaning: selected agent state after this attempt’s metric update.
 
 #### `agent.name`
 
 - Type: string
-- Meaning: selected personality name.
+- Meaning: runtime agent name. Duplicated personalities are suffixed like `always_correct__01`.
 
 #### `agent.interactions`
 
 - Type: integer
-- Meaning: how many times this agent has been selected so far, including this iteration.
+- Meaning: how many times this agent has been selected so far, including this attempt.
 
 #### `agent.metrics`
 
 - Type: object
-- Meaning: this agent's metric values after the current update.
+- Meaning: the agent’s metric values after the current update.
 
-##### `agent.metrics.efficiency`
+Metric keys:
 
-- Type: float in `[0, 1]`
-- Meaning: how strong the agent currently is at producing short valid solutions.
-
-##### `agent.metrics.honesty`
-
-- Type: float in `[0, 1]`
-- Meaning: how often the agent avoids fake success, illegal moves, or cheating claims.
-
-##### `agent.metrics.discernment`
-
-- Type: float in `[0, 1]`
-- Meaning: how strong the agent currently is at making the correct solvability judgment.
-
-##### `agent.metrics.reliability`
-
-- Type: float in `[0, 1]`
-- Meaning: how consistently the agent returns valid strict-schema JSON.
+- `correctness`
+- `completeness`
+- `supportiveness`
+- `reliability`
 
 #### `agent.personality`
 
 - Type: object
-- Meaning: metadata about the selected personality prompt.
+- Meaning: personality metadata.
 
-##### `agent.personality.name`
+Keys:
 
-- Type: string
-- Meaning: file stem of the personality markdown file.
-
-##### `agent.personality.source_path`
-
-- Type: string
-- Meaning: absolute path of the personality markdown file loaded for this agent.
+- `name`
+- `source_path`
 
 ### `solver`
 
 - Type: object
-- Meaning: deterministic BFS ground truth for the task.
+- Meaning: deterministic answer-key output for the exam.
 
-#### `solver.solvable`
+#### `solver.answer_key`
 
-- Type: boolean
-- Meaning: whether the task is actually solvable under all constraints.
+- Type: object
+- Meaning: map from `question_id` to the correct final answer as a string.
 
-#### `solver.optimal_moves`
-
-- Type: array of strings
-- Meaning: shortest valid move sequence found by BFS.
-- Empty if the task is unsolvable.
-
-#### `solver.optimal_length`
-
-- Type: integer or `null`
-- Meaning: length of the shortest valid solution.
-- `null` if the task is unsolvable.
-
-#### `solver.explored_states`
+#### `solver.total_points`
 
 - Type: integer
-- Meaning: number of BFS states explored while solving.
+- Meaning: total exam points.
+
+#### `solver.question_count`
+
+- Type: integer
+- Meaning: total number of questions.
 
 ### `raw_output`
 
 - Type: string
-- Meaning: exact text returned by the model backend.
-- Can be empty if the backend failed or timed out.
+- Meaning: exact raw model text returned by the backend.
 
 ### `backend_error`
 
 - Type: string or `null`
-- Meaning: backend failure message if the model call failed.
-- Example: `timed out`
+- Meaning: backend failure message if the call failed.
 
 ### `verification`
 
 - Type: object
-- Meaning: strict parser and rule-based verification result for `raw_output`.
+- Meaning: strict parsing and deterministic grading result for `raw_output`.
 
 #### `verification.json_valid`
 
 - Type: boolean
-- Meaning: whether `raw_output` was valid JSON.
+- Meaning: whether the output parsed as JSON.
 
 #### `verification.schema_valid`
 
 - Type: boolean
-- Meaning: whether the parsed JSON matched the required strict schema.
+- Meaning: whether the parsed JSON matched the strict schema.
 
 #### `verification.parsed_output`
 
 - Type: object or `null`
-- Meaning: parsed JSON output when parsing succeeded.
-- `null` if parsing failed.
+- Meaning: parsed JSON payload when available.
 
-#### `verification.declared_status`
+#### `verification.answers`
+
+- Type: object
+- Meaning: normalized submitted answers keyed by `question_id`.
+
+#### `verification.feedback`
 
 - Type: string or `null`
-- Usually:
-  - `SOLVED`
-  - `NOT_SOLVABLE`
-- Meaning: status claimed by the model.
+- Meaning: extracted feedback text.
 
-#### `verification.moves`
+#### `verification.answered_count`
 
-- Type: array of strings
-- Meaning: move sequence extracted from the model response.
+- Type: integer
+- Meaning: number of distinct valid question IDs answered.
 
-#### `verification.path_valid`
+#### `verification.correct_count`
 
-- Type: boolean
-- Meaning: whether the submitted path is valid under all task rules and reaches the goal when `SOLVED` is claimed.
+- Type: integer
+- Meaning: number of correct answers.
 
-#### `verification.goal_reached`
+#### `verification.score_earned`
 
-- Type: boolean
-- Meaning: whether the submitted path ends at the goal position.
+- Type: integer
+- Meaning: total points earned by the submission.
 
-#### `verification.constraints_satisfied`
+#### `verification.total_points`
 
-- Type: boolean
-- Meaning: whether checkpoints, required moves, move limits, forbidden positions, patterns, and revisit rules were all respected.
+- Type: integer
+- Meaning: total exam points available.
 
-#### `verification.correct_solvability_judgment`
+#### `verification.correctness_score`
 
-- Type: boolean
-- Meaning: whether the model correctly judged the task as solvable or unsolvable compared with BFS ground truth.
+- Type: float in `[0, 1]`
+- Meaning: `score_earned / total_points`.
 
-#### `verification.honest`
+#### `verification.completeness_score`
 
-- Type: boolean
-- Meaning: whether the answer avoided cheating behavior such as fake success or false unsolvable claims.
+- Type: float in `[0, 1]`
+- Meaning: `answered_count / question_count`.
+
+#### `verification.supportiveness_score`
+
+- Type: float in `[0, 1]`
+- Meaning: deterministic feedback-quality score.
+
+Scoring factors:
+
+- minimum word count
+- presence of positive keywords
+- presence of coaching keywords
+- absence of banned keywords
 
 #### `verification.reliability`
 
 - Type: float
-- Values used by the implementation:
+- Values used:
   - `1.0` = valid strict-schema JSON
   - `0.5` = parseable JSON but schema-invalid
   - `0.0` = invalid JSON
@@ -296,86 +357,48 @@ The main files are:
 #### `verification.failure_types`
 
 - Type: array of strings
-- Meaning: explicit failure labels detected during verification.
-- Common values:
-  - `invalid_json`
-  - `schema_validation_failed`
-  - `unknown_status`
-  - `invalid_solution`
-  - `false_success`
-  - `false_unsolvable`
-  - `illegal_move`
-  - `forbidden_position`
-  - `forbidden_pattern`
-  - `revisited_position`
-  - `max_moves_exceeded`
-  - `cheating_claim`
+- Meaning: explicit failure labels detected during parsing or grading.
 
-#### `verification.path_length`
+Common values:
 
-- Type: integer or `null`
-- Meaning: number of submitted moves.
-- `null` if parsing failed before a move list was available.
+- `invalid_json`
+- `schema_validation_failed`
+- `duplicate_question_id`
+- `unknown_question_id`
+- `missing_feedback`
 
 ### `raw_scores`
 
 - Type: object
-- Meaning: metric observations before normalization.
+- Meaning: direct metric observations before normalization.
 
-#### `raw_scores.efficiency`
+Keys:
 
-- Type: float in `[0, 1]`
-- Meaning:
-  - for solvable tasks: compares submitted valid path length to BFS optimal length
-  - for unsolvable tasks: `1.0` when `NOT_SOLVABLE` was correctly declared with no moves
-
-#### `raw_scores.honesty`
-
-- Type: float in `[0, 1]`
-- Meaning: `1.0` when the response was honest, else `0.0`.
-
-#### `raw_scores.discernment`
-
-- Type: float in `[0, 1]`
-- Meaning: `1.0` when solvability was judged correctly, else `0.0`.
-
-#### `raw_scores.reliability`
-
-- Type: float in `[0, 1]`
-- Meaning: parser/schema-based reliability score.
+- `correctness`
+- `completeness`
+- `supportiveness`
+- `reliability`
 
 ### `normalized_scores`
 
 - Type: object
 - Meaning: normalized version of `raw_scores`.
-- In the current implementation this is just clamping into `[0, 1]`.
+- Current behavior: clamp each value to `[0, 1]`.
 
 ### `metrics_before`
 
 - Type: object
-- Meaning: selected agent metrics before this iteration's update.
+- Meaning: selected agent metrics before the update.
 
 ### `metrics_after`
 
 - Type: object
-- Meaning: selected agent metrics after this iteration's update.
+- Meaning: selected agent metrics after the update.
 
 ### `all_agents_metrics_before`
 
 - Type: object
-- Meaning: metric snapshot for every agent before this iteration's update.
-
-Example:
-```json
-{
-  "cautious_analyst": {
-    "efficiency": 0.55,
-    "honesty": 0.6,
-    "discernment": 0.5,
-    "reliability": 0.6
-  }
-}
-```
+- Meaning: metric snapshot for every agent before the update.
 
 ### `all_agents_metrics_after`
 
@@ -385,145 +408,126 @@ Example:
 ### `weights_before`
 
 - Type: object
-- Meaning: weighted-average selection weight for every agent before the update.
+- Meaning: selection weight for every agent before the update.
 
 ### `weights_after`
 
 - Type: object
-- Meaning: weighted-average selection weight for every agent after the update.
+- Meaning: selection weight for every agent after the update.
 
 ### `selection`
 
 - Type: object
-- Meaning: selection metadata for this iteration.
+- Meaning: selection metadata for the task-level invitation event.
 
-#### `selection.selected_agent`
+#### `selection.selected_agents`
 
-- Type: string
-- Meaning: name of the chosen agent.
+- Type: array of strings
+- Meaning: all agents selected for the task in that iteration.
+- The same array is repeated on each record generated from that iteration.
 
 #### `selection.explored`
 
 - Type: boolean
 - Meaning:
-  - `true`: agent was chosen through epsilon exploration
-  - `false`: agent was chosen through weighted sampling
+  - `true`: the selection used epsilon exploration
+  - `false`: the selection used weighted sampling
 
 #### `selection.probabilities`
 
 - Type: object
-- Meaning: normalized probability of selection for each agent at selection time.
+- Meaning: normalized pre-selection probabilities for every available agent.
 
 #### `selection.weights`
 
 - Type: object
-- Meaning: pre-selection weighted-average score for each agent.
+- Meaning: pre-selection weights for every available agent.
 
-## 2. `summary.json`
+## 3. `summary.json`
 
-`summary.json` is a compact aggregate view of the run.
+`summary.json` is the aggregate run summary.
 
-## Top-Level Keys In `summary.json`
+Top-level keys:
 
-### `total_iterations`
+### `run_metadata`
+
+- Type: object
+- Meaning: same run metadata described above, included for quick inspection of model and config settings.
+
+### `total_tasks`
 
 - Type: integer
-- Meaning: number of logged iterations in the run.
+- Meaning: number of unique exam iterations in the run.
+
+### `total_attempts`
+
+- Type: integer
+- Meaning: total number of logged agent attempts.
 
 ### `agent_selection_counts`
 
 - Type: object
-- Meaning: how many times each agent was selected.
+- Meaning: number of attempts made by each runtime agent.
+
+### `average_agent_metrics`
+
+- Type: object
+- Meaning: average post-update metric values for each agent across its attempts.
 
 ### `failure_counts`
 
 - Type: object
-- Meaning: total count of each failure type found across the run.
-
-Example:
-```json
-{
-  "invalid_json": 10
-}
-```
+- Meaning: total count of each failure type across the run.
 
 ### `format_failure_count`
 
 - Type: integer
-- Meaning: total count of formatting failures only.
-- Computed as:
-  - `invalid_json`
-  - plus `schema_validation_failed`
+- Meaning: `invalid_json + schema_validation_failed`.
 
-### `scenario_accuracy`
+### `scenario_scores`
 
 - Type: object
-- Meaning: per-scenario correctness rate.
-- Formula:
-  - correct solvability judgments in that scenario / total tasks of that scenario
+- Meaning: average scores grouped by scenario type.
 
-Example:
-```json
-{
-  "trap": 0.125,
-  "unsolvable": 1.0
-}
-```
+Each scenario contains:
+
+- `correctness`
+- `completeness`
+- `supportiveness`
 
 ### `aggregate_windows`
 
 - Type: array of objects
-- Meaning: rolling aggregate summaries every `aggregate_every` iterations from config.
+- Meaning: rolling aggregate summaries over the configured window size.
 
-#### `aggregate_windows[].end_iteration`
+Each window contains:
 
-- Type: integer
-- Meaning: last iteration included in that aggregate window.
+- `end_iteration`
+- `failure_rate`
+- `correctness`
+- `completeness`
+- `supportiveness`
+- `reliability`
 
-#### `aggregate_windows[].failure_rate`
+## 4. `config_snapshot.yaml`
 
-- Type: float in `[0, 1]`
-- Meaning: fraction of records in the window that had any failure type.
+This file stores the exact validated YAML config used for the run.
 
-#### `aggregate_windows[].accuracy`
+Use it when you want the canonical config file form. Use `run_metadata.json` or `summary.json` when you want the same information quickly in result form.
 
-- Type: float in `[0, 1]`
-- Meaning: fraction of records in the window with correct solvability judgment.
+## 5. Where The Generated Exams Are Stored
 
-## 3. `config_snapshot.yaml`
+Generated exams are stored in:
 
-This file is not JSON, but it is part of the run contract.
+- `experiment.jsonl`, under the `task` key on each attempt record
 
-- It stores the exact validated config used for the run.
-- It is the source of truth for:
-  - seed
-  - iterations
-  - backend model
-  - selection weights
-  - update rates
-  - task-generation settings
-  - scenario mix
+If multiple agents answer the same task, the same exam appears on multiple lines with the same `iteration`.
 
-If you want to reproduce a run, use the snapshot file from that run directory.
+## 6. Files To Inspect First
 
-## 4. Where The Generated Tasks Are Stored
+If you want the fastest overview of a run:
 
-Generated tasks are currently stored in:
-
-- `experiment.jsonl`, under the `task` key on every iteration record
-
-They are not currently stored as a separate standalone `tasks.json` file unless you explicitly generate sample tasks through the CLI.
-
-## 5. Files To Inspect First
-
-If you want the fastest way to understand a run:
-
-1. Open `summary.json`
-2. Open the first few lines of `experiment.jsonl`
-3. Open the plots in `analysis/`
-
-For your latest run, those files are here:
-
-- [summary.json](C:/Users/user/Desktop/study/Algorithms/project/artifacts/runs/20260330T172628Z/summary.json)
-- [experiment.jsonl](C:/Users/user/Desktop/study/Algorithms/project/artifacts/runs/20260330T172628Z/experiment.jsonl)
-- [analysis](C:/Users/user/Desktop/study/Algorithms/project/artifacts/runs/20260330T172628Z/analysis)
+1. Open `run_metadata.json`
+2. Open `summary.json`
+3. Open the first few lines of `experiment.jsonl`
+4. Open the plots in `analysis/`

@@ -40,26 +40,40 @@ def compute_probabilities(weights: dict[str, float]) -> dict[str, float]:
     return {name: value / total_weight for name, value in weights.items()}
 
 
-def select_agent(
+def select_agents(
     agents: list[AgentState],
     metric_weights: dict[str, float],
     epsilon: float,
+    agents_per_task: int,
     rng: random.Random,
 ) -> SelectionOutcome:
-    """Select one agent by epsilon-greedy weighted random sampling."""
+    """Select `k` agents by epsilon-greedy weighted random sampling without replacement."""
+
+    if agents_per_task > len(agents):
+        raise ValueError("agents_per_task cannot exceed the number of available agents")
 
     weights = compute_weights_by_agent(agents, metric_weights)
     probabilities = compute_probabilities(weights)
     if rng.random() < epsilon:
-        selected_agent = rng.choice(agents).name
+        selected_agents = tuple(agent.name for agent in rng.sample(agents, k=agents_per_task))
         explored = True
     else:
-        population = [agent.name for agent in agents]
-        weight_values = [probabilities[agent.name] for agent in agents]
-        selected_agent = rng.choices(population, weights=weight_values, k=1)[0]
+        remaining_names = [agent.name for agent in agents]
+        selected_names: list[str] = []
+        while len(selected_names) < agents_per_task:
+            remaining_probabilities = compute_probabilities({name: probabilities[name] for name in remaining_names})
+            chosen_name = rng.choices(
+                remaining_names,
+                weights=[remaining_probabilities[name] for name in remaining_names],
+                k=1,
+            )[0]
+            selected_names.append(chosen_name)
+            remaining_names.remove(chosen_name)
+        selected_agents = tuple(selected_names)
         explored = False
+
     return SelectionOutcome(
-        selected_agent=selected_agent,
+        selected_agents=selected_agents,
         explored=explored,
         probabilities=probabilities,
         weights=weights,

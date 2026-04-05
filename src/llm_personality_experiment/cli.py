@@ -12,6 +12,7 @@ from llm_personality_experiment.config import load_config
 from llm_personality_experiment.experiment.runner import ExperimentRunner
 from llm_personality_experiment.tasks.generator import TaskGenerator
 from llm_personality_experiment.tasks.models import ScenarioType
+from llm_personality_experiment.utils.io import read_jsonl
 
 
 def main() -> None:
@@ -49,7 +50,20 @@ def main() -> None:
         log_path = run_dir / "experiment.jsonl"
         summary_path = run_dir / "summary.json"
         analysis_dir = run_dir / "analysis"
-        summary = write_summary(log_path=log_path, output_path=summary_path, aggregate_every=args.aggregate_every)
+        run_metadata_path = run_dir / "run_metadata.json"
+        run_metadata: dict[str, object] | None = None
+        if run_metadata_path.exists():
+            run_metadata = json.loads(run_metadata_path.read_text(encoding="utf-8"))
+        else:
+            records = read_jsonl(log_path)
+            if records and isinstance(records[0].get("run_metadata"), dict):
+                run_metadata = records[0]["run_metadata"]
+        summary = write_summary(
+            log_path=log_path,
+            output_path=summary_path,
+            aggregate_every=args.aggregate_every,
+            run_metadata=run_metadata,
+        )
         generated_plots = [str(path) for path in generate_plots(log_path=log_path, output_dir=analysis_dir)]
         print(json.dumps({"summary": summary, "plots": generated_plots}, indent=2, sort_keys=True))
         return

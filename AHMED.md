@@ -1,17 +1,19 @@
 # Ahmed Run Guide
 
-This file explains exactly how to install the project and run it on a fresh machine.
+This file explains how to install and run the project on a fresh machine.
 
 ## Required Versions
 
 - Python: `3.11`
-- Conda: any recent Miniconda or Anaconda
-- Ollama: required for the local model backend
-- Model used by the project: `qwen3.5:9b`
+- Conda: recent Miniconda or Anaconda
+- Ollama: required for local model runs
+- Recommended model in this repo: `qwen3.5:9b`
+
+The conda environment file already pins Python:
+
+- [environment.yml](C:/Users/user/Desktop/study/Algorithms/project/environment.yml)
 
 ## 1. Clone The Repository
-
-Open a terminal in the directory where you want the project:
 
 ```powershell
 git clone <repo-url>
@@ -20,29 +22,18 @@ cd project
 
 ## 2. Create The Conda Environment
 
-The repo already includes an environment file:
-
-- [environment.yml](C:/Users/user/Desktop/study/Algorithms/project/environment.yml)
-
-Create the environment:
-
 ```powershell
 conda env create -f environment.yml
-```
-
-Activate it:
-
-```powershell
 conda activate llm-personality-exp
 ```
 
 ## 3. Install Ollama
 
-Install Ollama from:
+Download it from:
 
-- [https://ollama.com/download](https://ollama.com/download)
+- [Ollama Download](https://ollama.com/download)
 
-After installing, verify it:
+Verify:
 
 ```powershell
 ollama --version
@@ -50,19 +41,17 @@ ollama --version
 
 ## 4. Pull The Model
 
-Pull the exact model used by the configs:
-
 ```powershell
 ollama pull qwen3.5:9b
 ```
 
-Verify it exists:
+Optional check:
 
 ```powershell
 ollama list
 ```
 
-## 5. Check The Project Install
+## 5. Validate The Setup
 
 Run the tests:
 
@@ -70,59 +59,87 @@ Run the tests:
 pytest -q
 ```
 
-Expected result: all tests should pass.
+Expected result: all tests pass.
 
-## 6. Recommended Config
+## 6. Recommended First Config
 
-Use this easier config first:
+Start with:
 
 - [configs/easy_qwen.yaml](C:/Users/user/Desktop/study/Algorithms/project/configs/easy_qwen.yaml)
 
-Why this config:
+Why:
 
-- smaller position range
-- fewer move types
-- more solvable tasks
-- fewer trap and constraint-heavy tasks
-- same model: `qwen3.5:9b`
+- easier elementary-school exams
+- smaller operand ranges
+- shorter runs than the default config
+- `agents_per_task: 2`, so two agents answer the same exam each iteration
+- duplicated personalities already configured for comparison
+- uses `qwen3.5:9b`
 
 ## 7. Run The Experiment
-
-Run:
 
 ```powershell
 python -m llm_personality_experiment.cli run --config configs\easy_qwen.yaml
 ```
 
-The command prints a JSON object with the output paths.
+The command prints a JSON object with the output paths for the run directory, log file, metadata file, summary file, config snapshot, and analysis folder.
 
 ## 8. Where Results Are Stored
 
-Each run creates a directory under:
+Each run creates a folder under:
 
 ```text
 artifacts\runs\<run_id>\
 ```
 
-Inside that folder:
+Important files inside it:
 
-- `experiment.jsonl` = one full record per iteration
-- `summary.json` = aggregate results
-- `config_snapshot.yaml` = exact config used for that run
+- `experiment.jsonl` = one record per agent attempt
+- `run_metadata.json` = model name and key run settings
+- `summary.json` = aggregate run metrics
+- `config_snapshot.yaml` = exact validated config used
 - `analysis\` = generated plots
 
-Important output files:
+Main result files:
 
 - `artifacts\runs\<run_id>\experiment.jsonl`
+- `artifacts\runs\<run_id>\run_metadata.json`
 - `artifacts\runs\<run_id>\summary.json`
+- `artifacts\runs\<run_id>\config_snapshot.yaml`
+
+Main plots:
+
 - `artifacts\runs\<run_id>\analysis\metrics_over_time.png`
 - `artifacts\runs\<run_id>\analysis\weights_over_time.png`
 - `artifacts\runs\<run_id>\analysis\failure_rates.png`
-- `artifacts\runs\<run_id>\analysis\scenario_performance.png`
+- `artifacts\runs\<run_id>\analysis\scenario_scores.png`
+- `artifacts\runs\<run_id>\analysis\selection_counts.png`
+- `artifacts\runs\<run_id>\analysis\exam_scores_over_time.png`
+- `artifacts\runs\<run_id>\analysis\json_validity_over_time.png`
 
-## 9. Generate Sample Tasks Only
+## 9. What Gets Stored About The Run
 
-If you want to inspect tasks without running the full experiment:
+This matters if you compare different models later.
+
+Stored automatically:
+
+- the backend model name
+- provider, base URL, timeout, and temperature
+- `agents_per_task`
+- selection epsilon and metric weights
+- full task-generation settings
+- personality duplication settings
+- the full validated config snapshot
+
+You can inspect those in:
+
+- `run_metadata.json`
+- `summary.json` under `run_metadata`
+- each `experiment.jsonl` line under `run_metadata`
+
+## 10. Generate Sample Exams Only
+
+If you want to inspect generated tasks without running the model:
 
 ```powershell
 python -m llm_personality_experiment.cli generate-sample-tasks --config configs\easy_qwen.yaml --count 10
@@ -134,19 +151,20 @@ To save them:
 python -m llm_personality_experiment.cli generate-sample-tasks --config configs\easy_qwen.yaml --count 10 --output artifacts\tasks\sample_tasks.json
 ```
 
-## 10. Re-Analyze An Existing Run
-
-If a run already exists, generate the summary and plots again:
+## 11. Re-Analyze An Existing Run
 
 ```powershell
-python -m llm_personality_experiment.cli analyze --run-dir artifacts\runs\<run_id> --aggregate-every 4
+python -m llm_personality_experiment.cli analyze --run-dir artifacts\runs\<run_id> --aggregate-every 6
 ```
 
-## 11. Common Problems
+This regenerates:
+
+- `summary.json`
+- all plots in `analysis\`
+
+## 12. Common Problems
 
 ### Model not found
-
-Fix:
 
 ```powershell
 ollama pull qwen3.5:9b
@@ -154,35 +172,35 @@ ollama pull qwen3.5:9b
 
 ### Ollama not running
 
-Try:
-
 ```powershell
 ollama list
 ```
 
 If that fails, start Ollama and retry.
 
-### Too many `invalid_json` failures
+### Many `invalid_json` or `schema_validation_failed` records
 
 This can still happen with local models.
-Use the easier config first:
+
+Try:
 
 - `configs/easy_qwen.yaml`
-
-If needed, increase backend timeout in the config.
+- a longer timeout
+- fewer questions per exam
+- fewer invited agents if your machine is slow
 
 ### Slow first run
 
-The first request can be slower because the model is loading into memory.
+The first request is often slower because the model is loading into memory.
 
-## 12. Minimal Run Checklist
+## 13. Minimal Checklist
 
 Run these commands in order:
 
 ```powershell
 conda env create -f environment.yml
 conda activate llm-personality-exp
-ollama pull qwen3.5:4b
+ollama pull qwen3.5:9b
 pytest -q
 python -m llm_personality_experiment.cli run --config configs\easy_qwen.yaml
 ```

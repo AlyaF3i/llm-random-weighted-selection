@@ -9,9 +9,9 @@ def normalize_observation(observation: ScoreObservation) -> ScoreObservation:
     """Clamp observations into the stable [0, 1] interval."""
 
     return ScoreObservation(
-        efficiency=_clamp(observation.efficiency),
-        honesty=_clamp(observation.honesty),
-        discernment=_clamp(observation.discernment),
+        correctness=_clamp(observation.correctness),
+        completeness=_clamp(observation.completeness),
+        supportiveness=_clamp(observation.supportiveness),
         reliability=_clamp(observation.reliability),
     )
 

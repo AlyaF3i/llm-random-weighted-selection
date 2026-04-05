@@ -17,13 +17,13 @@ def load_personalities(directory: str | Path) -> list[PersonalityDefinition]:
     personalities: list[PersonalityDefinition] = []
     for path in sorted(personalities_dir.glob("*.md")):
         with path.open("r", encoding="utf-8") as handle:
-            system_prompt = handle.read().strip()
-        if not system_prompt:
+            prompt_text = handle.read().strip()
+        if not prompt_text:
             raise ValueError(f"Personality file is empty: {path}")
         personalities.append(
             PersonalityDefinition(
                 name=path.stem,
-                system_prompt=system_prompt,
+                prompt_text=prompt_text,
                 source_path=path.resolve(),
             )
         )

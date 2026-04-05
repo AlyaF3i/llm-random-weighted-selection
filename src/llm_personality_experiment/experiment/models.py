@@ -12,6 +12,7 @@ class RunPaths:
     run_dir: str
     log_path: str
     analysis_dir: str
+    metadata_path: str
     summary_path: str
     config_snapshot_path: str
 

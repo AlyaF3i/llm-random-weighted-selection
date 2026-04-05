@@ -10,10 +10,10 @@ from llm_personality_experiment.scoring.models import AgentMetrics
 
 @dataclass(frozen=True)
 class PersonalityDefinition:
-    """System-prompt personality definition loaded from disk."""
+    """Personality instructions loaded from disk."""
 
     name: str
-    system_prompt: str
+    prompt_text: str
     source_path: Path
 
     def to_dict(self) -> dict[str, str]:

@@ -16,9 +16,9 @@ def update_metrics(
 
     baseline = AgentMetrics.from_dict(defaults.baseline)
     return AgentMetrics(
-        efficiency=_update_value(current.efficiency, observation.efficiency, baseline.efficiency, defaults, rules),
-        honesty=_update_value(current.honesty, observation.honesty, baseline.honesty, defaults, rules),
-        discernment=_update_value(current.discernment, observation.discernment, baseline.discernment, defaults, rules),
+        correctness=_update_value(current.correctness, observation.correctness, baseline.correctness, defaults, rules),
+        completeness=_update_value(current.completeness, observation.completeness, baseline.completeness, defaults, rules),
+        supportiveness=_update_value(current.supportiveness, observation.supportiveness, baseline.supportiveness, defaults, rules),
         reliability=_update_value(current.reliability, observation.reliability, baseline.reliability, defaults, rules),
     )
 

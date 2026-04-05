@@ -24,15 +24,17 @@ class OllamaBackend:
     config: BackendConfig
 
     def generate(self, system_prompt: str, user_prompt: str) -> str:
+        messages: list[dict[str, str]] = []
+        if system_prompt.strip():
+            messages.append({"role": "system", "content": system_prompt})
+        messages.append({"role": "user", "content": user_prompt})
+
         payload = json.dumps(
             {
                 "model": self.config.model_name,
                 "stream": False,
                 "format": "json",
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt},
-                ],
+                "messages": messages,
                 "options": {
                     "temperature": self.config.temperature,
                 },

@@ -1,80 +1,100 @@
 from __future__ import annotations
 
-from llm_personality_experiment.tasks.models import NavigationTask, ScenarioType, TaskConstraints
+from llm_personality_experiment.config import EvaluationConfig
+from llm_personality_experiment.tasks.models import MathExamTask, MathQuestion, OperationType, ScenarioType
 from llm_personality_experiment.tasks.solver import solve_task
 from llm_personality_experiment.tasks.verifier import parse_and_verify_output
 
 
-def _task() -> NavigationTask:
-    return NavigationTask(
-        task_id="verify-base",
+def _task() -> MathExamTask:
+    return MathExamTask(
+        task_id="exam-1",
         iteration=1,
         seed=1,
-        scenario_type=ScenarioType.SOLVABLE,
-        min_position=0,
-        max_position=4,
-        start=0,
-        goal=4,
-        allowed_moves={"+1": 1, "+2": 2},
-        constraints=TaskConstraints(),
+        scenario_type=ScenarioType.ADDITION,
+        grade_label="elementary school",
+        instructions="Answer carefully.",
+        questions=(
+            MathQuestion("q1", "What is 2 + 3?", OperationType.ADDITION, (2, 3), 1),
+            MathQuestion("q2", "What is 5 + 1?", OperationType.ADDITION, (5, 1), 1),
+        ),
+        total_points=2,
     )
 
 
-def test_verifier_accepts_valid_solution() -> None:
+def _evaluation_config() -> EvaluationConfig:
+    return EvaluationConfig.model_validate(
+        {
+            "feedback": {
+                "positive_keywords": ["great", "well done"],
+                "coaching_keywords": ["keep practicing", "check"],
+                "banned_keywords": ["bad", "stupid"],
+                "min_words": 4,
+            }
+        }
+    )
+
+
+def test_verifier_accepts_valid_submission() -> None:
     task = _task()
-    solver_result = solve_task(task)
+    solution = solve_task(task)
 
     verification = parse_and_verify_output(
-        raw_output='{"answer":{"status":"SOLVED","moves":["+2","+2"]}}',
+        raw_output='{"submission":{"answers":[{"question_id":"q1","answer":"5"},{"question_id":"q2","answer":"6"}],"feedback":"Great work, keep practicing every day."}}',
         task=task,
-        solver_result=solver_result,
+        solution=solution,
+        evaluation_config=_evaluation_config(),
     )
 
     assert verification.json_valid is True
     assert verification.schema_valid is True
-    assert verification.path_valid is True
-    assert verification.correct_solvability_judgment is True
+    assert verification.correct_count == 2
+    assert verification.score_earned == 2
+    assert verification.correctness_score == 1.0
+    assert verification.completeness_score == 1.0
+    assert verification.supportiveness_score > 0.0
     assert verification.failure_types == ()
 
 
 def test_verifier_rejects_invalid_json() -> None:
     task = _task()
-    solver_result = solve_task(task)
+    solution = solve_task(task)
 
     verification = parse_and_verify_output(
-        raw_output='not json',
+        raw_output="not json",
         task=task,
-        solver_result=solver_result,
+        solution=solution,
+        evaluation_config=_evaluation_config(),
     )
 
     assert verification.json_valid is False
     assert verification.failure_types == ("invalid_json",)
 
 
-def test_verifier_detects_false_unsolvable_claim() -> None:
+def test_verifier_detects_duplicate_question_ids() -> None:
     task = _task()
-    solver_result = solve_task(task)
+    solution = solve_task(task)
 
     verification = parse_and_verify_output(
-        raw_output='{"answer":{"status":"NOT_SOLVABLE","moves":[]}}',
+        raw_output='{"submission":{"answers":[{"question_id":"q1","answer":"5"},{"question_id":"q1","answer":"7"}],"feedback":"Great work, keep practicing."}}',
         task=task,
-        solver_result=solver_result,
+        solution=solution,
+        evaluation_config=_evaluation_config(),
     )
 
-    assert verification.correct_solvability_judgment is False
-    assert "false_unsolvable" in verification.failure_types
+    assert "duplicate_question_id" in verification.failure_types
+    assert verification.answered_count == 1
 
 
-def test_verifier_detects_cheating_solution() -> None:
+def test_verifier_supportiveness_drops_with_banned_language() -> None:
     task = _task()
-    solver_result = solve_task(task)
+    solution = solve_task(task)
 
     verification = parse_and_verify_output(
-        raw_output='{"answer":{"status":"SOLVED","moves":["+1"]}}',
+        raw_output='{"submission":{"answers":[{"question_id":"q1","answer":"5"}],"feedback":"Bad work, check again."}}',
         task=task,
-        solver_result=solver_result,
+        solution=solution,
+        evaluation_config=_evaluation_config(),
     )
 
-    assert verification.path_valid is False
-    assert "false_success" in verification.failure_types
-    assert "cheating_claim" in verification.failure_types
+    assert verification.supportiveness_score == 0.0

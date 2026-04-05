@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 import yaml
 from pydantic import BaseModel, Field, model_validator
@@ -14,6 +13,7 @@ class PathConfig(BaseModel):
     runs_dirname: str = "runs"
     analysis_dirname: str = "analysis"
     logs_filename: str = "experiment.jsonl"
+    metadata_filename: str = "run_metadata.json"
     config_snapshot_filename: str = "config_snapshot.yaml"
     summary_filename: str = "summary.json"
 
@@ -26,14 +26,26 @@ class BackendConfig(BaseModel):
     temperature: float = 0.0
 
 
+class PersonalitiesConfig(BaseModel):
+    duplication: dict[str, int] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def validate_duplication(self) -> "PersonalitiesConfig":
+        if any(value < 0 for value in self.duplication.values()):
+            raise ValueError("personality duplication counts must be non-negative")
+        return self
+
+
 class SelectionConfig(BaseModel):
     epsilon: float = Field(ge=0.0, le=1.0)
+    agents_per_task: int = Field(ge=1)
     metric_weights: dict[str, float]
 
     @model_validator(mode="after")
     def validate_weights(self) -> "SelectionConfig":
-        if not self.metric_weights:
-            raise ValueError("metric_weights must not be empty")
+        required = {"correctness", "completeness", "supportiveness", "reliability"}
+        if set(self.metric_weights) != required:
+            raise ValueError(f"metric_weights must contain exactly {sorted(required)}")
         if any(value < 0 for value in self.metric_weights.values()):
             raise ValueError("metric_weights must be non-negative")
         if sum(self.metric_weights.values()) <= 0:
@@ -47,6 +59,13 @@ class MetricDefaultsConfig(BaseModel):
     min_value: float = 0.0
     max_value: float = 1.0
 
+    @model_validator(mode="after")
+    def validate_metrics(self) -> "MetricDefaultsConfig":
+        required = {"correctness", "completeness", "supportiveness", "reliability"}
+        if set(self.initial) != required or set(self.baseline) != required:
+            raise ValueError(f"metrics.initial and metrics.baseline must contain exactly {sorted(required)}")
+        return self
+
 
 class UpdateBandConfig(BaseModel):
     increase_rate: float = Field(gt=0.0, le=1.0)
@@ -58,35 +77,47 @@ class UpdateRulesConfig(BaseModel):
     below_baseline: UpdateBandConfig
 
 
-class DifficultyConfig(BaseModel):
-    position_upper_bound_min: int = Field(ge=4)
-    position_upper_bound_max: int = Field(ge=4)
-    min_move_options: int = Field(ge=2)
-    max_move_options: int = Field(ge=2)
-    trap_attempts: int = Field(ge=1)
-    max_generation_attempts: int = Field(ge=1)
+class OperationConfig(BaseModel):
+    min_operand: int = Field(ge=0)
+    max_operand: int = Field(ge=0)
+    non_negative_only: bool = True
 
     @model_validator(mode="after")
-    def validate_range(self) -> "DifficultyConfig":
-        if self.position_upper_bound_max < self.position_upper_bound_min:
-            raise ValueError("position_upper_bound_max must be >= position_upper_bound_min")
-        if self.max_move_options < self.min_move_options:
-            raise ValueError("max_move_options must be >= min_move_options")
+    def validate_range(self) -> "OperationConfig":
+        if self.max_operand < self.min_operand:
+            raise ValueError("operation max_operand must be >= min_operand")
         return self
 
 
 class TaskGenerationConfig(BaseModel):
-    available_moves: list[int]
-    difficulty: DifficultyConfig
-    constraint_presets: dict[str, Any]
+    grade_label: str
+    questions_per_exam_min: int = Field(ge=1)
+    questions_per_exam_max: int = Field(ge=1)
+    points_per_question: int = Field(ge=1)
+    operations: dict[str, OperationConfig]
+    mixed_operation_pool: list[str]
 
     @model_validator(mode="after")
-    def validate_available_moves(self) -> "TaskGenerationConfig":
-        if len(self.available_moves) < 2:
-            raise ValueError("available_moves must contain at least two moves")
-        if 0 in self.available_moves:
-            raise ValueError("available_moves must not contain 0")
+    def validate_ranges(self) -> "TaskGenerationConfig":
+        if self.questions_per_exam_max < self.questions_per_exam_min:
+            raise ValueError("questions_per_exam_max must be >= questions_per_exam_min")
+        if not self.operations:
+            raise ValueError("task_generation.operations must not be empty")
+        for operation_name in self.mixed_operation_pool:
+            if operation_name not in self.operations:
+                raise ValueError(f"mixed operation {operation_name} is missing from operations")
         return self
+
+
+class FeedbackEvaluationConfig(BaseModel):
+    positive_keywords: list[str]
+    coaching_keywords: list[str]
+    banned_keywords: list[str]
+    min_words: int = Field(ge=1)
+
+
+class EvaluationConfig(BaseModel):
+    feedback: FeedbackEvaluationConfig
 
 
 class AnalysisConfig(BaseModel):
@@ -98,19 +129,22 @@ class ExperimentConfig(BaseModel):
     seed: int
     iterations: int = Field(ge=1)
     personalities_dir: str = "personalities"
+    personalities: PersonalitiesConfig = Field(default_factory=PersonalitiesConfig)
     paths: PathConfig
     backend: BackendConfig
     selection: SelectionConfig
     metrics: MetricDefaultsConfig
     updates: UpdateRulesConfig
     task_generation: TaskGenerationConfig
+    evaluation: EvaluationConfig
     scenario_mix: dict[str, float]
     analysis: AnalysisConfig
 
     @model_validator(mode="after")
     def validate_scenario_mix(self) -> "ExperimentConfig":
-        if not self.scenario_mix:
-            raise ValueError("scenario_mix must not be empty")
+        required = {"addition", "subtraction", "multiplication", "mixed_review"}
+        if set(self.scenario_mix) != required:
+            raise ValueError(f"scenario_mix must contain exactly {sorted(required)}")
         if any(value < 0 for value in self.scenario_mix.values()):
             raise ValueError("scenario_mix must be non-negative")
         total = sum(self.scenario_mix.values())

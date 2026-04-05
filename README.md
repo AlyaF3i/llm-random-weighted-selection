@@ -1,42 +1,53 @@
 # LLM Personality Experiment
 
-This repository implements a deterministic experimental framework for studying how different system-prompt personalities behave over time when they share the same base LLM and compete through adaptive weighted selection.
+This repository implements a deterministic framework for comparing LLM personalities on elementary-school math exams. Each task is a generated exam, multiple agents can be invited to the same task, outputs are verified without another LLM, and agent-selection weights adapt over time from measured performance.
 
-The implementation follows the requirements in `AGENTS.md` and `SPEC.md`:
+The implementation follows the repository requirements in `AGENTS.md` and `SPEC.md`:
 
 - deterministic task generation
-- deterministic solver and verifier
+- deterministic answer-key solving
 - strict JSON-only output validation
 - baseline-aware metric updates
-- weighted random agent selection with epsilon exploration
-- JSONL replay logs
-- analysis plots and summaries
+- epsilon-greedy weighted agent selection
+- structured JSONL replay logs
+- summary generation and plotting utilities
 
 ## Project Structure
 
 ```text
 src/llm_personality_experiment/
   agents/          Personality loading, prompt construction, Ollama backend
-  tasks/           Task models, generator, BFS solver, strict verifier
-  scoring/         Metrics, normalization, update rules, weighted selection
+  tasks/           Exam models, generator, deterministic solver, verifier
+  scoring/         Metrics, normalization, updates, weighted selection
   experiment/      Main run loop and orchestration
   logging_utils/   JSONL logging
   analysis/        Summaries and plots
   utils/           Seed and I/O helpers
 configs/
-  default.yaml     Central experiment configuration
+  default.yaml     Main experiment config
+  quickstart.yaml  Shorter smoke-run config
+  easy_qwen.yaml   Easier exam config for local Ollama runs
 personalities/
-  *.md             Personality system prompts
+  *.md             Personality instruction files loaded at runtime
 tests/
-  Unit and smoke tests
+  Unit and runner smoke tests
 ```
 
 ## Requirements
 
 - Python 3.10+
-- An Ollama server for real model runs
+- Conda recommended; `environment.yml` pins Python 3.11
+- Ollama for real model runs
+- Tested local model family: `qwen3.5:9b`
 
-Install:
+Install with conda:
+
+```powershell
+conda env create -f environment.yml
+conda activate llm-personality-exp
+```
+
+Or install directly:
 
 ```bash
 pip install -e .[dev]
@@ -44,60 +55,85 @@ pip install -e .[dev]
 
 ## How To Run
 
-Generate sample tasks:
+Pull the model first:
 
-```bash
-python -m llm_personality_experiment.cli generate-sample-tasks --config configs/default.yaml --count 5
+```powershell
+ollama pull qwen3.5:9b
+```
+
+Generate sample exams:
+
+```powershell
+python -m llm_personality_experiment.cli generate-sample-tasks --config configs\default.yaml --count 5
 ```
 
 Run a full experiment:
 
-```bash
-python -m llm_personality_experiment.cli run --config configs/default.yaml
+```powershell
+python -m llm_personality_experiment.cli run --config configs\default.yaml
+```
+
+Run the easier preset:
+
+```powershell
+python -m llm_personality_experiment.cli run --config configs\easy_qwen.yaml
 ```
 
 Analyze an existing run:
 
-```bash
-python -m llm_personality_experiment.cli analyze --run-dir artifacts/runs/<run_id> --aggregate-every 10
+```powershell
+python -m llm_personality_experiment.cli analyze --run-dir artifacts\runs\<run_id> --aggregate-every 10
 ```
 
 Run tests:
 
-```bash
+```powershell
 pytest -q
 ```
 
 ## Task Design
 
-Each task is a 1D navigation problem on integer positions `min_position..max_position`.
+Each task is a deterministic elementary-school math exam.
 
-A task contains:
+Each exam contains:
 
-- start and goal positions
-- allowed moves such as `+1`, `-1`, `+2`
-- optional checkpoints
-- optional max move limit
-- optional forbidden positions
-- optional required moves
-- optional forbidden move patterns
-- optional no-revisit rule
+- a `grade_label`
+- a short instruction string
+- a scenario type: `addition`, `subtraction`, `multiplication`, or `mixed_review`
+- a configurable number of questions
+- per-question point values
 
-Supported scenario types:
+Each question contains:
 
-- `solvable`
-- `unsolvable`
-- `trap`
-- `constraint_heavy`
+- `question_id`
+- `prompt`
+- `operation`
+- `operands`
+- `points`
 
-### Scenario Construction
+The task generator is deterministic by seed and iteration. For a fixed config and seed, the same iteration always produces the same exam.
 
-- `solvable`: generated until the constrained BFS solver finds a valid path.
-- `unsolvable`: generated from a solvable base task, then made unsatisfiable by tightening `max_moves` below the optimal path length.
-- `trap`: generated from a solvable base task, then an intermediate position from the unconstrained shortest path is forbidden so the tempting shortest route becomes invalid while another valid route still exists.
-- `constraint_heavy`: generated with multiple simultaneous constraints and validated by BFS before acceptance.
+### Scenario Types
 
-Task generation is deterministic by seed and iteration. The generator uses an iteration-specific RNG derived from the top-level seed, so task creation is reproducible and isolated from model-selection randomness.
+- `addition`: all questions are addition
+- `subtraction`: all questions are subtraction
+- `multiplication`: all questions are multiplication
+- `mixed_review`: operations are sampled from `mixed_operation_pool`
+
+The generator is fully programmatic and does not rely on the model.
+
+## Prompting Design
+
+Personalities are loaded from `personalities/*.md`.
+
+Each personality file is injected into the user prompt. The backend system prompt is intentionally left empty. The user prompt includes:
+
+- the personality instructions
+- the task payload
+- the strict JSON contract
+- rules about answering every question and giving brief supportive feedback
+
+This means the experiment varies behavior through personality text without relying on separate system-prompt handling.
 
 ## Output Contract
 
@@ -105,20 +141,12 @@ Agents must return strict JSON only:
 
 ```json
 {
-  "answer": {
-    "status": "SOLVED",
-    "moves": ["+1", "+2"]
-  }
-}
-```
-
-or:
-
-```json
-{
-  "answer": {
-    "status": "NOT_SOLVABLE",
-    "moves": []
+  "submission": {
+    "answers": [
+      {"question_id": "q1", "answer": "12"},
+      {"question_id": "q2", "answer": "7"}
+    ],
+    "feedback": "Great effort. Keep practicing and check each answer carefully."
   }
 }
 ```
@@ -127,89 +155,89 @@ The verifier rejects:
 
 - invalid JSON
 - extra schema fields
-- unknown status values
-- illegal move labels
-- out-of-bounds moves
-- forbidden positions
-- forbidden patterns
-- revisit violations
-- false success claims
-- false unsolvable claims
+- duplicate question IDs
+- unknown question IDs
+- missing feedback
 
-Invalid JSON and schema failures explicitly reduce reliability.
+No extra text is allowed outside the JSON object.
 
 ## Solver And Verifier
 
-The solver is a deterministic BFS over task state. State includes:
+The solver is deterministic and builds the answer key directly from the exam questions.
 
-- current position
-- visited checkpoints
-- required moves already used
-- revisit history when `no_revisits` is active
-- recent move suffix needed for forbidden-pattern checks
+The verifier:
 
-The solver returns:
+- parses the JSON strictly with Pydantic
+- normalizes submitted numeric answers
+- checks each submitted answer against the answer key
+- scores answered-question coverage
+- scores supportive feedback with deterministic keyword rules
+- records explicit failure types
 
-- solvable vs unsolvable
-- shortest valid move sequence when solvable
-- shortest path length
-- explored state count
-
-The verifier parses the model output, validates the schema, evaluates the proposed move sequence against all constraints, compares the solvability judgment against the BFS ground truth, and emits structured failure types.
-
-No LLM is used for evaluation.
+No LLM is used for scoring or evaluation.
 
 ## Metrics
 
 Each agent maintains four separate metrics:
 
-- `efficiency`
-- `honesty`
-- `discernment`
+- `correctness`
+- `completeness`
+- `supportiveness`
 - `reliability`
+
+These are never collapsed internally into a single stored score.
 
 ### Raw Score Mapping
 
-For each iteration:
+For each attempt:
 
-- `efficiency`: `optimal_length / proposed_length` for a valid solved path, clamped to `[0, 1]`. For correctly declared unsolvable tasks it is `1.0`.
-- `honesty`: `1.0` when the answer contains no cheating behavior or invalid claims, else `0.0`.
-- `discernment`: `1.0` when the agent makes the correct solvability judgment, else `0.0`.
-- `reliability`: `1.0` for valid strict-schema JSON, `0.5` for parseable but schema-invalid output, `0.0` for invalid JSON.
+- `correctness`: `score_earned / total_points`
+- `completeness`: `answered_count / question_count`
+- `supportiveness`: deterministic feedback score from keyword and minimum-length checks
+- `reliability`: `1.0` for valid strict-schema JSON, `0.5` for parseable but schema-invalid JSON, `0.0` for invalid JSON
 
-The normalization stage currently clamps observations to `[0, 1]` so stability is preserved without changing semantics.
+Normalization currently clamps each metric into `[0, 1]`.
 
 ## Selection Method
 
-For agent `i`, let the metrics be:
+Each agent has a weight computed from the configured metric weights.
 
-- `e_i`: efficiency
-- `h_i`: honesty
-- `d_i`: discernment
-- `r_i`: reliability
+Let:
 
-Let the config weights be `a, b, c, d`. The current agent weight is:
+- `c_i` = correctness
+- `m_i` = completeness
+- `s_i` = supportiveness
+- `r_i` = reliability
+
+and config weights:
+
+- `a` for correctness
+- `b` for completeness
+- `c` for supportiveness
+- `d` for reliability
+
+Then:
 
 ```text
-w_i = (a*e_i + b*h_i + c*d_i + d*r_i) / (a + b + c + d)
+w_i = (a*c_i + b*m_i + c*s_i + d*r_i) / (a + b + c + d)
 ```
 
-When not exploring:
+Selection is epsilon-greedy:
 
-```text
-p_i = w_i / sum_j w_j
-```
+- with probability `epsilon`, choose uniformly at random
+- otherwise choose by weighted sampling
 
-With epsilon exploration:
+The config key `selection.agents_per_task` controls how many agents are invited to the same task. Selection is done without replacement, so a task can be attempted by `k` distinct agents in the same iteration.
 
-- with probability `epsilon`, select a random agent uniformly
-- otherwise sample according to `p_i`
+This creates:
 
-This is implemented in `scoring/selection.py`.
+- one generated exam per iteration
+- one selection event per iteration
+- one JSONL record per selected agent attempt
 
 ## Update Equations
 
-Each metric value `x_t` is updated from observation `s_t` using the agent's current value relative to a configured baseline `b`.
+Each metric value `x_t` is updated from observation `s_t` relative to its configured baseline `b`.
 
 If `x_t >= b`, use the `above_baseline` rates:
 
@@ -231,120 +259,133 @@ else:
 
 Where `clamp` restricts the result to `[min_value, max_value]`.
 
-This satisfies the required behavior:
+This allows configurable recovery and penalty behavior above and below baseline.
 
-- above baseline: smaller increases and smaller decreases
-- below baseline: stronger recovery and stronger penalties
+## Personality Duplication
+
+All personality files are loaded from disk. The config can duplicate any personality with:
+
+```yaml
+personalities:
+  duplication:
+    always_correct: 2
+    always_nice_teacher: 2
+    sometimes_correct: 2
+```
+
+Duplicated agents are instantiated as separate runtime agents with names like:
+
+- `always_correct__01`
+- `always_correct__02`
+
+They share the same prompt text but maintain independent metric histories.
 
 ## Logging
 
-Every iteration is logged as one JSONL record containing:
+Runs are stored under:
 
-- iteration index
-- full task payload
-- selected agent metadata
-- solver result
-- raw model output
-- verification result
-- raw and normalized scores
-- selected agent metrics before and after update
-- all-agent metrics before and after
-- weights before and after
-- selection probabilities and exploration flag
-- backend error text when present
+```text
+artifacts/runs/<run_id>/
+```
 
-This is sufficient for replay and post-hoc analysis.
+Main files:
+
+- `experiment.jsonl`
+- `run_metadata.json`
+- `summary.json`
+- `config_snapshot.yaml`
+- `analysis/*.png`
+
+`experiment.jsonl` is the replay log. It contains one record per agent attempt and includes:
+
+- `attempt_id`
+- `iteration`
+- `run_metadata`
+- `task`
+- `agent`
+- `solver`
+- `raw_output`
+- `backend_error`
+- `verification`
+- `raw_scores`
+- `normalized_scores`
+- `metrics_before`
+- `metrics_after`
+- `all_agents_metrics_before`
+- `all_agents_metrics_after`
+- `weights_before`
+- `weights_after`
+- `selection`
+
+Generated tasks are stored inside `experiment.jsonl` under `task`.
+
+`run_metadata.json` stores the model and run settings directly in JSON form, including backend settings, selection policy, duplication config, and the full validated config dump. `summary.json` also includes the same metadata under `run_metadata`.
 
 ## Analysis Outputs
 
-`analysis/plots.py` generates:
+The plotting utilities generate:
 
 - `metrics_over_time.png`
 - `weights_over_time.png`
 - `failure_rates.png`
-- `scenario_performance.png`
+- `scenario_scores.png`
+- `selection_counts.png`
+- `exam_scores_over_time.png`
+- `json_validity_over_time.png`
 
-`analysis/summary.py` writes `summary.json` with:
+`summary.json` includes:
 
-- total iterations
-- per-agent selection counts
-- failure counts
-- format failure count
-- scenario accuracy
-- aggregate window summaries
+- `run_metadata`
+- `total_tasks`
+- `total_attempts`
+- `agent_selection_counts`
+- `average_agent_metrics`
+- `failure_counts`
+- `format_failure_count`
+- `scenario_scores`
+- `aggregate_windows`
 
 ## Configuration
 
-All experiment parameters are loaded from YAML through a single central loader in `config.py`.
+All experiment parameters are loaded from YAML through the single config loader in `src/llm_personality_experiment/config.py`.
 
-`configs/default.yaml` includes:
+Key config areas:
 
-- top-level seed and iteration count
-- artifact paths
-- Ollama backend settings
-- epsilon and metric weights
-- initial and baseline metric values
-- baseline-aware update rates
-- task generation ranges and constraint presets
-- scenario mix
-- analysis settings
+- `backend`: Ollama model, URL, timeout, temperature
+- `selection`: epsilon, metric weights, `agents_per_task`
+- `metrics`: initial values, baselines, min/max clamp
+- `updates`: above-baseline and below-baseline rates
+- `task_generation`: exam size, grade label, operation ranges, mixed pool
+- `evaluation`: feedback-scoring keywords
+- `scenario_mix`: relative frequencies of exam types
+- `personalities.duplication`: per-personality replication count
+- `analysis`: window size and whether to generate plots automatically
 
-There are no hardcoded experiment constants outside general program structure and schema names.
-
-## Personalities
-
-All personalities are loaded from `personalities/*.md`.
-
-The repository includes three example personalities:
-
-- `cautious_analyst`
-- `efficiency_hunter`
-- `skeptical_auditor`
-
-To add more agents, drop another markdown file into `personalities/`.
-
-## Ollama Backend
-
-The backend abstraction currently supports Ollama through `/api/chat`.
-
-Configurable settings:
-
-- `base_url`
-- `model_name`
-- `timeout_seconds`
-- `temperature`
-
-The prompt layer enforces the JSON-only output contract on top of the personality prompt.
+There are no hardcoded experiment constants outside schema names and general program structure.
 
 ## Assumptions And Design Decisions
 
-- The task domain is intentionally narrow and fully deterministic so correctness is measurable without another LLM.
-- `trap` tasks are defined as solvable tasks where an apparently short route is invalidated by constraints and a longer valid alternative remains.
-- `discernment` is scored as correct solvability judgment rather than only on explicit unsolvable cases, because the experiment needs one comparable signal per iteration.
-- `reliability` is intentionally separated from correctness so format failures can be penalized independently.
-- The analysis plots use logged all-agent metric snapshots rather than reconstructing state from partial deltas.
+- The task domain is deliberately narrow so correctness is fully measurable without another LLM.
+- Feedback scoring is deterministic and keyword-based to keep evaluation reproducible.
+- `supportiveness` is tracked separately from answer quality so helpful tone can be measured independently.
+- Multi-agent selection uses the same exam for all selected agents in an iteration, making comparisons within a task direct.
+- Personality duplication is treated as multiple independent bandit arms with identical prompt text.
 
 ## Testing
 
 The test suite covers:
 
-- deterministic task generation
-- scenario labeling
-- BFS shortest-path behavior
-- constraint validation
-- strict verifier behavior
+- deterministic exam generation
+- solver correctness
+- verifier behavior
 - score computation
-- baseline-aware metric updates
-- selection probability logic
-- experiment runner artifact creation with a stub backend
+- baseline-aware updates
+- multi-agent selection
+- end-to-end runner behavior with a stub backend
 
-## Definition Of Done Coverage
+## Related Docs
 
-The repository now provides:
-
-- end-to-end experiment runner
-- deterministic task generation and verification
-- adaptive agent selection and updates
-- structured logs
-- analysis summaries and plots
-- personalities, config, tests, and documentation
+- `AGENTS.md`
+- `SPEC.md`
+- `JSON_REFERENCE.md`
+- `AHMED.md`

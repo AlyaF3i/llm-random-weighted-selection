@@ -9,17 +9,17 @@ from dataclasses import asdict, dataclass
 class AgentMetrics:
     """Per-agent metric state."""
 
-    efficiency: float
-    honesty: float
-    discernment: float
+    correctness: float
+    completeness: float
+    supportiveness: float
     reliability: float
 
     @classmethod
     def from_dict(cls, payload: dict[str, float]) -> "AgentMetrics":
         return cls(
-            efficiency=float(payload["efficiency"]),
-            honesty=float(payload["honesty"]),
-            discernment=float(payload["discernment"]),
+            correctness=float(payload["correctness"]),
+            completeness=float(payload["completeness"]),
+            supportiveness=float(payload["supportiveness"]),
             reliability=float(payload["reliability"]),
         )
 
@@ -31,17 +31,17 @@ class AgentMetrics:
 class ScoreObservation:
     """Raw or normalized observation for one iteration."""
 
-    efficiency: float
-    honesty: float
-    discernment: float
+    correctness: float
+    completeness: float
+    supportiveness: float
     reliability: float
 
     @classmethod
     def from_dict(cls, payload: dict[str, float]) -> "ScoreObservation":
         return cls(
-            efficiency=float(payload["efficiency"]),
-            honesty=float(payload["honesty"]),
-            discernment=float(payload["discernment"]),
+            correctness=float(payload["correctness"]),
+            completeness=float(payload["completeness"]),
+            supportiveness=float(payload["supportiveness"]),
             reliability=float(payload["reliability"]),
         )
 
@@ -53,7 +53,7 @@ class ScoreObservation:
 class SelectionOutcome:
     """Selection decision metadata."""
 
-    selected_agent: str
+    selected_agents: tuple[str, ...]
     explored: bool
     probabilities: dict[str, float]
     weights: dict[str, float]
