@@ -94,7 +94,8 @@ artifacts\runs\<run_id>\
 
 Important files inside it:
 
-- `experiment.jsonl` = one record per agent attempt
+- `experiment.jsonl` = one record per task iteration, with all invited agents inside `agent_attempts`
+- `tasks.jsonl` = one record per asked exam
 - `run_metadata.json` = model name and key run settings
 - `summary.json` = aggregate run metrics
 - `config_snapshot.yaml` = exact validated config used
@@ -103,6 +104,7 @@ Important files inside it:
 Main result files:
 
 - `artifacts\runs\<run_id>\experiment.jsonl`
+- `artifacts\runs\<run_id>\tasks.jsonl`
 - `artifacts\runs\<run_id>\run_metadata.json`
 - `artifacts\runs\<run_id>\summary.json`
 - `artifacts\runs\<run_id>\config_snapshot.yaml`
@@ -116,6 +118,17 @@ Main plots:
 - `artifacts\runs\<run_id>\analysis\selection_counts.png`
 - `artifacts\runs\<run_id>\analysis\exam_scores_over_time.png`
 - `artifacts\runs\<run_id>\analysis\json_validity_over_time.png`
+- `artifacts\runs\<run_id>\analysis\agent_failure_counts.png`
+- `artifacts\runs\<run_id>\analysis\agent_success_rates.png`
+- `artifacts\runs\<run_id>\analysis\question_volume_over_time.png`
+- `artifacts\runs\<run_id>\analysis\failure_type_heatmap.png`
+- `artifacts\runs\<run_id>\analysis\final_metric_snapshot.png`
+
+Several plots use thresholds or reference lines:
+
+- metric plots use configured baselines
+- some bar plots are colored by above/below average
+- validity plots show a target threshold band
 
 ## 9. What Gets Stored About The Run
 
@@ -136,6 +149,7 @@ You can inspect those in:
 - `run_metadata.json`
 - `summary.json` under `run_metadata`
 - each `experiment.jsonl` line under `run_metadata`
+- `config_snapshot.yaml`
 
 ## 10. Generate Sample Exams Only
 

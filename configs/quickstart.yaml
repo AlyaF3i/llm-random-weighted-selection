@@ -11,6 +11,8 @@ paths:
   runs_dirname: runs
   analysis_dirname: analysis
   logs_filename: experiment.jsonl
+  tasks_filename: tasks.jsonl
+  metadata_filename: run_metadata.json
   config_snapshot_filename: config_snapshot.yaml
   summary_filename: summary.json
 backend:

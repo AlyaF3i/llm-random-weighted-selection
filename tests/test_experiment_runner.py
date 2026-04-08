@@ -24,17 +24,30 @@ def test_experiment_runner_writes_artifacts(config, monkeypatch, tmp_path) -> No
     run_paths = ExperimentRunner(runtime_config).run()
 
     assert Path(run_paths.log_path).exists()
+    assert Path(run_paths.tasks_path).exists()
     assert Path(run_paths.metadata_path).exists()
     assert Path(run_paths.summary_path).exists()
     assert (Path(run_paths.analysis_dir) / "metrics_over_time.png").exists()
     assert (Path(run_paths.analysis_dir) / "selection_counts.png").exists()
+    assert (Path(run_paths.analysis_dir) / "agent_failure_counts.png").exists()
+    assert (Path(run_paths.analysis_dir) / "failure_type_heatmap.png").exists()
 
     run_metadata = json.loads(Path(run_paths.metadata_path).read_text(encoding="utf-8"))
     assert run_metadata["backend"]["model_name"] == "test-model"
     assert run_metadata["selection"]["agents_per_task"] == 2
 
-    first_record = json.loads(Path(run_paths.log_path).read_text(encoding="utf-8").splitlines()[0])
+    log_lines = Path(run_paths.log_path).read_text(encoding="utf-8").splitlines()
+    task_lines = Path(run_paths.tasks_path).read_text(encoding="utf-8").splitlines()
+    assert len(log_lines) == 2
+    assert len(task_lines) == 2
+
+    first_record = json.loads(log_lines[0])
     assert first_record["run_metadata"]["backend"]["model_name"] == "test-model"
+    assert first_record["iteration"] == 1
+    assert len(first_record["agent_attempts"]) == 2
+    assert first_record["selection"]["selected_agents"]
 
     summary = json.loads(Path(run_paths.summary_path).read_text(encoding="utf-8"))
     assert summary["run_metadata"]["backend"]["model_name"] == "test-model"
+    assert summary["total_tasks"] == 2
+    assert summary["total_attempts"] == 4

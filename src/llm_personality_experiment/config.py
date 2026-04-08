@@ -13,6 +13,7 @@ class PathConfig(BaseModel):
     runs_dirname: str = "runs"
     analysis_dirname: str = "analysis"
     logs_filename: str = "experiment.jsonl"
+    tasks_filename: str = "tasks.jsonl"
     metadata_filename: str = "run_metadata.json"
     config_snapshot_filename: str = "config_snapshot.yaml"
     summary_filename: str = "summary.json"

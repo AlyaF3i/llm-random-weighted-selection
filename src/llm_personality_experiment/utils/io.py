@@ -24,6 +24,16 @@ def write_json(path: str | Path, payload: dict[str, Any]) -> None:
         json.dump(payload, handle, indent=2, sort_keys=True)
 
 
+def append_jsonl(path: str | Path, payload: dict[str, Any]) -> None:
+    """Append one JSON object to a JSONL file."""
+
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, sort_keys=True))
+        handle.write("\n")
+
+
 def read_jsonl(path: str | Path) -> list[dict[str, Any]]:
     """Load JSONL records from disk."""
 

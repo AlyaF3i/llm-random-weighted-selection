@@ -233,7 +233,9 @@ This creates:
 
 - one generated exam per iteration
 - one selection event per iteration
-- one JSONL record per selected agent attempt
+- one `experiment.jsonl` record per iteration
+- one `tasks.jsonl` record per iteration
+- an `agent_attempts` array inside each iteration record
 
 ## Update Equations
 
@@ -291,33 +293,28 @@ artifacts/runs/<run_id>/
 Main files:
 
 - `experiment.jsonl`
+- `tasks.jsonl`
 - `run_metadata.json`
 - `summary.json`
 - `config_snapshot.yaml`
 - `analysis/*.png`
 
-`experiment.jsonl` is the replay log. It contains one record per agent attempt and includes:
+`experiment.jsonl` is the replay log. It now contains one record per task iteration and includes:
 
-- `attempt_id`
 - `iteration`
 - `run_metadata`
 - `task`
-- `agent`
 - `solver`
-- `raw_output`
-- `backend_error`
-- `verification`
-- `raw_scores`
-- `normalized_scores`
-- `metrics_before`
-- `metrics_after`
 - `all_agents_metrics_before`
 - `all_agents_metrics_after`
 - `weights_before`
 - `weights_after`
 - `selection`
+- `agent_attempts`
 
-Generated tasks are stored inside `experiment.jsonl` under `task`.
+Each entry in `agent_attempts` stores one invited agent's output, verification result, failures, and metrics before/after update.
+
+`tasks.jsonl` stores the exact exams asked, one task per iteration, so the questions are easy to inspect without reading scoring data.
 
 `run_metadata.json` stores the model and run settings directly in JSON form, including backend settings, selection policy, duplication config, and the full validated config dump. `summary.json` also includes the same metadata under `run_metadata`.
 
@@ -332,6 +329,17 @@ The plotting utilities generate:
 - `selection_counts.png`
 - `exam_scores_over_time.png`
 - `json_validity_over_time.png`
+- `agent_failure_counts.png`
+- `agent_success_rates.png`
+- `question_volume_over_time.png`
+- `failure_type_heatmap.png`
+- `final_metric_snapshot.png`
+
+Several plots include threshold-aware coloring or reference lines:
+
+- metric plots use configured baselines
+- selection and success/failure bar charts use run averages
+- validity plots show a target threshold band
 
 `summary.json` includes:
 
@@ -340,9 +348,11 @@ The plotting utilities generate:
 - `total_attempts`
 - `agent_selection_counts`
 - `average_agent_metrics`
+- `agent_outcomes`
 - `failure_counts`
 - `format_failure_count`
 - `scenario_scores`
+- `task_failure_overview`
 - `aggregate_windows`
 
 ## Configuration

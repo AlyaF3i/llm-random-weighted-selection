@@ -22,7 +22,7 @@ from llm_personality_experiment.scoring.updates import update_metrics
 from llm_personality_experiment.tasks.generator import TaskGenerator
 from llm_personality_experiment.tasks.solver import solve_task
 from llm_personality_experiment.tasks.verifier import parse_and_verify_output
-from llm_personality_experiment.utils.io import ensure_directory, write_json
+from llm_personality_experiment.utils.io import append_jsonl, ensure_directory, write_json
 from llm_personality_experiment.utils.seed import create_rng
 
 
@@ -63,7 +63,19 @@ class ExperimentRunner:
                 next(agent for agent in agents if agent.name == selected_agent_name)
                 for selected_agent_name in selection_outcome.selected_agents
             ]
+            append_jsonl(
+                run_paths.tasks_path,
+                {
+                    "iteration": iteration,
+                    "run_metadata": run_metadata,
+                    "task": task.to_dict(),
+                    "solver": solver_result.to_dict(),
+                    "selection": selection_outcome.to_dict(),
+                },
+            )
 
+            agent_attempts: list[dict[str, object]] = []
+            pending_updates: list[tuple[AgentState, AgentMetrics, AgentMetrics]] = []
             for selected_agent in selected_agents:
                 attempt_id += 1
                 metrics_before = selected_agent.metrics
@@ -89,34 +101,46 @@ class ExperimentRunner:
                     defaults=self._config.metrics,
                     rules=self._config.updates,
                 )
-                selected_agent.metrics = metrics_after
-                selected_agent.interactions += 1
-
-                weights_after = compute_weights_by_agent(agents, self._config.selection.metric_weights)
-                all_metrics_after = {agent.name: agent.metrics.to_dict() for agent in agents}
-
-                logger.log(
+                pending_updates.append((selected_agent, metrics_before, metrics_after))
+                agent_attempts.append(
                     {
                         "attempt_id": attempt_id,
-                        "iteration": iteration,
-                        "run_metadata": run_metadata,
-                        "task": task.to_dict(),
-                        "agent": selected_agent.to_dict(),
-                        "solver": solver_result.to_dict(),
+                        "agent_name": selected_agent.name,
+                        "personality": selected_agent.personality.to_dict(),
+                        "interactions_before": selected_agent.interactions,
+                        "interactions_after": selected_agent.interactions + 1,
+                        "metrics_before": metrics_before.to_dict(),
+                        "metrics_after": metrics_after.to_dict(),
                         "raw_output": raw_output,
                         "backend_error": backend_error,
                         "verification": verification_result.to_dict(),
                         "raw_scores": raw_scores.to_dict(),
                         "normalized_scores": normalized_scores.to_dict(),
-                        "metrics_before": metrics_before.to_dict(),
-                        "metrics_after": metrics_after.to_dict(),
-                        "all_agents_metrics_before": all_metrics_before,
-                        "all_agents_metrics_after": all_metrics_after,
-                        "weights_before": weights_before,
-                        "weights_after": weights_after,
-                        "selection": selection_outcome.to_dict(),
+                        "had_failure": bool(backend_error) or bool(verification_result.failure_types),
                     }
                 )
+
+            for selected_agent, _, metrics_after in pending_updates:
+                selected_agent.metrics = metrics_after
+                selected_agent.interactions += 1
+
+            weights_after = compute_weights_by_agent(agents, self._config.selection.metric_weights)
+            all_metrics_after = {agent.name: agent.metrics.to_dict() for agent in agents}
+
+            logger.log(
+                {
+                    "iteration": iteration,
+                    "run_metadata": run_metadata,
+                    "task": task.to_dict(),
+                    "solver": solver_result.to_dict(),
+                    "selection": selection_outcome.to_dict(),
+                    "all_agents_metrics_before": all_metrics_before,
+                    "all_agents_metrics_after": all_metrics_after,
+                    "weights_before": weights_before,
+                    "weights_after": weights_after,
+                    "agent_attempts": agent_attempts,
+                }
+            )
 
         write_summary(
             log_path=run_paths.log_path,
@@ -173,6 +197,7 @@ class ExperimentRunner:
         return RunPaths(
             run_dir=str(run_dir),
             log_path=str(run_dir / self._config.paths.logs_filename),
+            tasks_path=str(run_dir / self._config.paths.tasks_filename),
             analysis_dir=str(analysis_dir),
             metadata_path=str(run_dir / self._config.paths.metadata_filename),
             summary_path=str(run_dir / self._config.paths.summary_filename),

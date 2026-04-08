@@ -5,6 +5,7 @@ This file explains the output files produced by each run of the math-exam experi
 Main files in a run directory:
 
 - `artifacts/runs/<run_id>/experiment.jsonl`
+- `artifacts/runs/<run_id>/tasks.jsonl`
 - `artifacts/runs/<run_id>/summary.json`
 - `artifacts/runs/<run_id>/run_metadata.json`
 - `artifacts/runs/<run_id>/config_snapshot.yaml`
@@ -122,26 +123,21 @@ Keys include:
 
 ## 2. `experiment.jsonl`
 
-`experiment.jsonl` is the replay log.
+`experiment.jsonl` is the full replay log.
 
 - It is JSONL, not one large JSON array.
 - Each line is one JSON object.
-- Each line is one agent attempt.
-- If `agents_per_task` is greater than `1`, the same `iteration` appears on multiple lines because multiple agents answered the same exam.
+- Each line is one task iteration.
+- The selected agents for that task are stored inside `agent_attempts`.
 
 Generated exams are stored here under the `task` key.
 
 ## Top-Level Keys In Each JSONL Record
 
-### `attempt_id`
-
-- Type: integer
-- Meaning: unique 1-based attempt counter across the run.
-
 ### `iteration`
 
 - Type: integer
-- Meaning: task iteration number. Multiple records can share the same value when more than one agent is invited.
+- Meaning: task iteration number.
 
 ### `run_metadata`
 
@@ -152,7 +148,7 @@ Generated exams are stored here under the `task` key.
 ### `task`
 
 - Type: object
-- Meaning: exact generated math exam used for this attempt.
+- Meaning: exact generated math exam used for this iteration.
 
 #### `task.task_id`
 
@@ -196,53 +192,16 @@ Generated exams are stored here under the `task` key.
 
 Each question contains:
 
-- `question_id`: stable question identifier such as `q1`
-- `prompt`: displayed math question text
-- `operation`: `addition`, `subtraction`, or `multiplication`
-- `operands`: two-number array serialized from the tuple
-- `points`: integer points for the question
+- `question_id`
+- `prompt`
+- `operation`
+- `operands`
+- `points`
 
 #### `task.total_points`
 
 - Type: integer
 - Meaning: total available score on the exam.
-
-### `agent`
-
-- Type: object
-- Meaning: selected agent state after this attempt’s metric update.
-
-#### `agent.name`
-
-- Type: string
-- Meaning: runtime agent name. Duplicated personalities are suffixed like `always_correct__01`.
-
-#### `agent.interactions`
-
-- Type: integer
-- Meaning: how many times this agent has been selected so far, including this attempt.
-
-#### `agent.metrics`
-
-- Type: object
-- Meaning: the agent’s metric values after the current update.
-
-Metric keys:
-
-- `correctness`
-- `completeness`
-- `supportiveness`
-- `reliability`
-
-#### `agent.personality`
-
-- Type: object
-- Meaning: personality metadata.
-
-Keys:
-
-- `name`
-- `source_path`
 
 ### `solver`
 
@@ -264,157 +223,6 @@ Keys:
 - Type: integer
 - Meaning: total number of questions.
 
-### `raw_output`
-
-- Type: string
-- Meaning: exact raw model text returned by the backend.
-
-### `backend_error`
-
-- Type: string or `null`
-- Meaning: backend failure message if the call failed.
-
-### `verification`
-
-- Type: object
-- Meaning: strict parsing and deterministic grading result for `raw_output`.
-
-#### `verification.json_valid`
-
-- Type: boolean
-- Meaning: whether the output parsed as JSON.
-
-#### `verification.schema_valid`
-
-- Type: boolean
-- Meaning: whether the parsed JSON matched the strict schema.
-
-#### `verification.parsed_output`
-
-- Type: object or `null`
-- Meaning: parsed JSON payload when available.
-
-#### `verification.answers`
-
-- Type: object
-- Meaning: normalized submitted answers keyed by `question_id`.
-
-#### `verification.feedback`
-
-- Type: string or `null`
-- Meaning: extracted feedback text.
-
-#### `verification.answered_count`
-
-- Type: integer
-- Meaning: number of distinct valid question IDs answered.
-
-#### `verification.correct_count`
-
-- Type: integer
-- Meaning: number of correct answers.
-
-#### `verification.score_earned`
-
-- Type: integer
-- Meaning: total points earned by the submission.
-
-#### `verification.total_points`
-
-- Type: integer
-- Meaning: total exam points available.
-
-#### `verification.correctness_score`
-
-- Type: float in `[0, 1]`
-- Meaning: `score_earned / total_points`.
-
-#### `verification.completeness_score`
-
-- Type: float in `[0, 1]`
-- Meaning: `answered_count / question_count`.
-
-#### `verification.supportiveness_score`
-
-- Type: float in `[0, 1]`
-- Meaning: deterministic feedback-quality score.
-
-Scoring factors:
-
-- minimum word count
-- presence of positive keywords
-- presence of coaching keywords
-- absence of banned keywords
-
-#### `verification.reliability`
-
-- Type: float
-- Values used:
-  - `1.0` = valid strict-schema JSON
-  - `0.5` = parseable JSON but schema-invalid
-  - `0.0` = invalid JSON
-
-#### `verification.failure_types`
-
-- Type: array of strings
-- Meaning: explicit failure labels detected during parsing or grading.
-
-Common values:
-
-- `invalid_json`
-- `schema_validation_failed`
-- `duplicate_question_id`
-- `unknown_question_id`
-- `missing_feedback`
-
-### `raw_scores`
-
-- Type: object
-- Meaning: direct metric observations before normalization.
-
-Keys:
-
-- `correctness`
-- `completeness`
-- `supportiveness`
-- `reliability`
-
-### `normalized_scores`
-
-- Type: object
-- Meaning: normalized version of `raw_scores`.
-- Current behavior: clamp each value to `[0, 1]`.
-
-### `metrics_before`
-
-- Type: object
-- Meaning: selected agent metrics before the update.
-
-### `metrics_after`
-
-- Type: object
-- Meaning: selected agent metrics after the update.
-
-### `all_agents_metrics_before`
-
-- Type: object
-- Meaning: metric snapshot for every agent before the update.
-
-### `all_agents_metrics_after`
-
-- Type: object
-- Meaning: metric snapshot for every agent after the update.
-
-### `weights_before`
-
-- Type: object
-- Meaning: selection weight for every agent before the update.
-
-### `weights_after`
-
-- Type: object
-- Meaning: selection weight for every agent after the update.
-
 ### `selection`
 
 - Type: object
@@ -424,7 +232,6 @@ Keys:
 
 - Type: array of strings
 - Meaning: all agents selected for the task in that iteration.
-- The same array is repeated on each record generated from that iteration.
 
 #### `selection.explored`
 
@@ -443,7 +250,148 @@ Keys:
 - Type: object
 - Meaning: pre-selection weights for every available agent.
 
-## 3. `summary.json`
+### `all_agents_metrics_before`
+
+- Type: object
+- Meaning: metric snapshot for every agent before the batch update for this task.
+
+### `all_agents_metrics_after`
+
+- Type: object
+- Meaning: metric snapshot for every agent after all selected agents from this task were updated.
+
+### `weights_before`
+
+- Type: object
+- Meaning: selection weight for every agent before the task.
+
+### `weights_after`
+
+- Type: object
+- Meaning: selection weight for every agent after all selected agents from this task were updated.
+
+### `agent_attempts`
+
+- Type: array of objects
+- Meaning: all invited-agent submissions for this iteration.
+
+Each `agent_attempts[]` entry contains:
+
+### `agent_attempts[].attempt_id`
+
+- Type: integer
+- Meaning: unique 1-based attempt counter across the run.
+
+### `agent_attempts[].agent_name`
+
+- Type: string
+- Meaning: runtime agent name. Duplicated personalities are suffixed like `always_correct__01`.
+
+### `agent_attempts[].personality`
+
+- Type: object
+- Meaning: personality metadata with:
+  - `name`
+  - `source_path`
+
+### `agent_attempts[].interactions_before`
+
+- Type: integer
+- Meaning: how many times this agent had been selected before this task.
+
+### `agent_attempts[].interactions_after`
+
+- Type: integer
+- Meaning: how many times this agent had been selected after this task update.
+
+### `agent_attempts[].metrics_before`
+
+- Type: object
+- Meaning: selected agent metrics before the update.
+
+### `agent_attempts[].metrics_after`
+
+- Type: object
+- Meaning: selected agent metrics after the update.
+
+Metric keys:
+
+- `correctness`
+- `completeness`
+- `supportiveness`
+- `reliability`
+
+### `agent_attempts[].raw_output`
+
+- Type: string
+- Meaning: exact raw model text returned by the backend.
+
+### `agent_attempts[].backend_error`
+
+- Type: string or `null`
+- Meaning: backend failure message if the model call failed.
+
+### `agent_attempts[].verification`
+
+- Type: object
+- Meaning: strict parsing and deterministic grading result for `raw_output`.
+
+Keys include:
+
+- `json_valid`
+- `schema_valid`
+- `parsed_output`
+- `answers`
+- `feedback`
+- `answered_count`
+- `correct_count`
+- `score_earned`
+- `total_points`
+- `correctness_score`
+- `completeness_score`
+- `supportiveness_score`
+- `reliability`
+- `failure_types`
+
+Common `failure_types` values:
+
+- `invalid_json`
+- `schema_validation_failed`
+- `duplicate_question_id`
+- `unknown_question_id`
+- `missing_feedback`
+
+### `agent_attempts[].raw_scores`
+
+- Type: object
+- Meaning: direct metric observations before normalization.
+
+### `agent_attempts[].normalized_scores`
+
+- Type: object
+- Meaning: normalized version of `raw_scores`.
+- Current behavior: clamp each value to `[0, 1]`.
+
+### `agent_attempts[].had_failure`
+
+- Type: boolean
+- Meaning: `true` if the backend failed or verification reported any failure type.
+
+## 3. `tasks.jsonl`
+
+`tasks.jsonl` is the task-only log.
+
+- It stores one line per iteration.
+- Each line includes:
+  - `iteration`
+  - `run_metadata`
+  - `task`
+  - `solver`
+  - `selection`
+
+Use this file when you want to inspect the exact questions asked without the full replay data.
+
+## 4. `summary.json`
 
 `summary.json` is the aggregate run summary.
 
@@ -457,12 +405,12 @@ Top-level keys:
 ### `total_tasks`
 
 - Type: integer
-- Meaning: number of unique exam iterations in the run.
+- Meaning: number of task iterations in the run.
 
 ### `total_attempts`
 
 - Type: integer
-- Meaning: total number of logged agent attempts.
+- Meaning: total number of invited-agent attempts across all tasks.
 
 ### `agent_selection_counts`
 
@@ -473,6 +421,19 @@ Top-level keys:
 
 - Type: object
 - Meaning: average post-update metric values for each agent across its attempts.
+
+### `agent_outcomes`
+
+- Type: object
+- Meaning: per-agent success/failure breakdown.
+
+Each agent contains:
+
+- `attempts`
+- `successes`
+- `failures`
+- `failure_rate`
+- `failure_types`
 
 ### `failure_counts`
 
@@ -494,6 +455,21 @@ Each scenario contains:
 - `correctness`
 - `completeness`
 - `supportiveness`
+- `reliability`
+
+### `task_failure_overview`
+
+- Type: array of objects
+- Meaning: one summary row per task indicating who failed and who did not.
+
+Each row contains:
+
+- `iteration`
+- `scenario_type`
+- `question_count`
+- `selected_agents`
+- `failing_agents`
+- `successful_agents`
 
 ### `aggregate_windows`
 
@@ -509,25 +485,25 @@ Each window contains:
 - `supportiveness`
 - `reliability`
 
-## 4. `config_snapshot.yaml`
+## 5. `config_snapshot.yaml`
 
 This file stores the exact validated YAML config used for the run.
 
 Use it when you want the canonical config file form. Use `run_metadata.json` or `summary.json` when you want the same information quickly in result form.
 
-## 5. Where The Generated Exams Are Stored
+## 6. Where The Generated Exams Are Stored
 
 Generated exams are stored in:
 
-- `experiment.jsonl`, under the `task` key on each attempt record
+- `tasks.jsonl`, one task per iteration
+- `experiment.jsonl`, under the `task` key on each iteration record
 
-If multiple agents answer the same task, the same exam appears on multiple lines with the same `iteration`.
-
-## 6. Files To Inspect First
+## 7. Files To Inspect First
 
 If you want the fastest overview of a run:
 
 1. Open `run_metadata.json`
 2. Open `summary.json`
-3. Open the first few lines of `experiment.jsonl`
-4. Open the plots in `analysis/`
+3. Open `tasks.jsonl`
+4. Open the first few lines of `experiment.jsonl`
+5. Open the plots in `analysis/`
