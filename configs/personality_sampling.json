@@ -1,0 +1,22 @@
+{
+  "default": {
+    "temperature": 0.2,
+    "p_sample": 0.55,
+    "k_sample": 24
+  },
+  "always_correct": {
+    "temperature": 0.05,
+    "p_sample": 0.2,
+    "k_sample": 8
+  },
+  "always_nice_teacher": {
+    "temperature": 0.18,
+    "p_sample": 0.45,
+    "k_sample": 20
+  },
+  "sometimes_correct": {
+    "temperature": 0.55,
+    "p_sample": 0.92,
+    "k_sample": 80
+  }
+}

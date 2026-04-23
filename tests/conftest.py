@@ -18,13 +18,15 @@ from llm_personality_experiment.config import ExperimentConfig
 def config() -> ExperimentConfig:
     return ExperimentConfig.model_validate(
         {
+            "experiment_name": "test_experiment",
             "seed": 123,
             "iterations": 6,
             "personalities_dir": "personalities",
             "personalities": {
                 "duplication": {
                     "always_correct": 2,
-                }
+                },
+                "sampling_parameters_path": "configs/personality_sampling.json",
             },
             "paths": {
                 "output_root": "artifacts",
@@ -40,6 +42,8 @@ def config() -> ExperimentConfig:
                 "model_name": "test-model",
                 "timeout_seconds": 5.0,
                 "temperature": 0.0,
+                "p_sample": 0.9,
+                "k_sample": 40,
             },
             "selection": {
                 "epsilon": 0.1,

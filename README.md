@@ -24,9 +24,8 @@ src/llm_personality_experiment/
   analysis/        Summaries and plots
   utils/           Seed and I/O helpers
 configs/
-  default.yaml     Main experiment config
-  quickstart.yaml  Shorter smoke-run config
-  easy_qwen.yaml   Easier exam config for local Ollama runs
+  easy_qwen.yaml   Main experiment config for local Ollama runs
+  personality_sampling.json  Per-personality sampling settings
 personalities/
   *.md             Personality instruction files loaded at runtime
 tests/
@@ -64,16 +63,10 @@ ollama pull qwen3.5:9b
 Generate sample exams:
 
 ```powershell
-python -m llm_personality_experiment.cli generate-sample-tasks --config configs\default.yaml --count 5
+python -m llm_personality_experiment.cli generate-sample-tasks --config configs\easy_qwen.yaml --count 5
 ```
 
 Run a full experiment:
-
-```powershell
-python -m llm_personality_experiment.cli run --config configs\default.yaml
-```
-
-Run the easier preset:
 
 ```powershell
 python -m llm_personality_experiment.cli run --config configs\easy_qwen.yaml
@@ -282,12 +275,24 @@ Duplicated agents are instantiated as separate runtime agents with names like:
 
 They share the same prompt text but maintain independent metric histories.
 
+Per-personality sampling settings are loaded from:
+
+- `configs/personality_sampling.json`
+
+That JSON defines:
+
+- `temperature`
+- `p_sample`
+- `k_sample`
+
+Use lower values for stricter, more deterministic personalities and higher values for personalities that should be more flexible or error-prone.
+
 ## Logging
 
 Runs are stored under:
 
 ```text
-artifacts/runs/<run_id>/
+artifacts/runs/<experiment_name>_<timestamp>/
 ```
 
 Main files:
@@ -317,6 +322,8 @@ Each entry in `agent_attempts` stores one invited agent's output, verification r
 `tasks.jsonl` stores the exact exams asked, one task per iteration, so the questions are easy to inspect without reading scoring data.
 
 `run_metadata.json` stores the model and run settings directly in JSON form, including backend settings, selection policy, duplication config, and the full validated config dump. `summary.json` also includes the same metadata under `run_metadata`.
+
+Per-personality sampling profiles are also stored in run metadata, so each run records exactly which `temperature`, `p_sample`, and `k_sample` values were used for each personality prompt.
 
 ## Analysis Outputs
 
@@ -361,7 +368,8 @@ All experiment parameters are loaded from YAML through the single config loader 
 
 Key config areas:
 
-- `backend`: Ollama model, URL, timeout, temperature
+- `experiment_name`: label used in the output folder name and stored in run metadata
+- `backend`: Ollama model, URL, timeout, temperature, fallback `p_sample`, fallback `k_sample`
 - `selection`: epsilon, metric weights, `agents_per_task`
 - `metrics`: initial values, baselines, min/max clamp
 - `updates`: above-baseline and below-baseline rates
@@ -369,9 +377,16 @@ Key config areas:
 - `evaluation`: feedback-scoring keywords
 - `scenario_mix`: relative frequencies of exam types
 - `personalities.duplication`: per-personality replication count
+- `personalities.sampling_parameters_path`: JSON file mapping each personality to its sampling settings
 - `analysis`: window size and whether to generate plots automatically
 
 There are no hardcoded experiment constants outside schema names and general program structure.
+
+The repository keeps only these three personalities:
+
+- `always_correct`
+- `always_nice_teacher`
+- `sometimes_correct`
 
 ## Assumptions And Design Decisions
 

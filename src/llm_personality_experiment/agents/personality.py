@@ -5,9 +5,13 @@ from __future__ import annotations
 from pathlib import Path
 
 from llm_personality_experiment.agents.models import PersonalityDefinition
+from llm_personality_experiment.agents.sampling import SamplingParameters
 
 
-def load_personalities(directory: str | Path) -> list[PersonalityDefinition]:
+def load_personalities(
+    directory: str | Path,
+    sampling_profiles: dict[str, SamplingParameters],
+) -> list[PersonalityDefinition]:
     """Load all `*.md` personality prompts from a directory."""
 
     personalities_dir = Path(directory)
@@ -25,6 +29,7 @@ def load_personalities(directory: str | Path) -> list[PersonalityDefinition]:
                 name=path.stem,
                 prompt_text=prompt_text,
                 source_path=path.resolve(),
+                sampling_parameters=sampling_profiles[path.stem],
             )
         )
     if not personalities:

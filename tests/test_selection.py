@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from llm_personality_experiment.agents.models import AgentState, PersonalityDefinition
+from llm_personality_experiment.agents.sampling import SamplingParameters
 from llm_personality_experiment.scoring.models import AgentMetrics
 from llm_personality_experiment.scoring.selection import compute_probabilities, compute_weight, select_agents
 
@@ -13,7 +14,12 @@ from llm_personality_experiment.scoring.selection import compute_probabilities, 
 def _agent(name: str, correctness: float) -> AgentState:
     return AgentState(
         name=name,
-        personality=PersonalityDefinition(name=name, prompt_text="prompt", source_path=Path(".")),
+        personality=PersonalityDefinition(
+            name=name,
+            prompt_text="prompt",
+            source_path=Path("."),
+            sampling_parameters=SamplingParameters(temperature=0.1, p_sample=0.3, k_sample=10),
+        ),
         metrics=AgentMetrics(
             correctness=correctness,
             completeness=0.5,

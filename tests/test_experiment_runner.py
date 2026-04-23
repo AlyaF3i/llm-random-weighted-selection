@@ -8,7 +8,17 @@ from llm_personality_experiment.experiment.runner import ExperimentRunner
 
 
 class _StubBackend:
-    def generate(self, system_prompt: str, user_prompt: str) -> str:
+    def __init__(self) -> None:
+        self.calls: list[dict[str, object]] = []
+
+    def generate(self, system_prompt: str, user_prompt: str, sampling_parameters=None) -> str:
+        self.calls.append(
+            {
+                "system_prompt": system_prompt,
+                "user_prompt": user_prompt,
+                "sampling_parameters": None if sampling_parameters is None else sampling_parameters.model_dump(mode="json"),
+            }
+        )
         return '{"submission":{"answers":[{"question_id":"q1","answer":"5"},{"question_id":"q2","answer":"6"},{"question_id":"q3","answer":"9"}],"feedback":"Great work, keep practicing and check carefully."}}'
 
 
@@ -19,7 +29,8 @@ def test_experiment_runner_writes_artifacts(config, monkeypatch, tmp_path) -> No
     config_payload["analysis"]["generate_after_run"] = True
     runtime_config = ExperimentConfig.model_validate(config_payload)
 
-    monkeypatch.setattr("llm_personality_experiment.experiment.runner.create_backend", lambda _: _StubBackend())
+    stub_backend = _StubBackend()
+    monkeypatch.setattr("llm_personality_experiment.experiment.runner.create_backend", lambda _: stub_backend)
 
     run_paths = ExperimentRunner(runtime_config).run()
 
@@ -33,8 +44,11 @@ def test_experiment_runner_writes_artifacts(config, monkeypatch, tmp_path) -> No
     assert (Path(run_paths.analysis_dir) / "failure_type_heatmap.png").exists()
 
     run_metadata = json.loads(Path(run_paths.metadata_path).read_text(encoding="utf-8"))
+    assert run_metadata["experiment_name"] == "test_experiment"
     assert run_metadata["backend"]["model_name"] == "test-model"
     assert run_metadata["selection"]["agents_per_task"] == 2
+    assert run_metadata["personalities"]["sampling_profiles"]["always_correct"]["temperature"] == 0.05
+    assert run_metadata["personalities"]["sampling_profiles"]["sometimes_correct"]["temperature"] == 0.55
 
     log_lines = Path(run_paths.log_path).read_text(encoding="utf-8").splitlines()
     task_lines = Path(run_paths.tasks_path).read_text(encoding="utf-8").splitlines()
@@ -42,12 +56,15 @@ def test_experiment_runner_writes_artifacts(config, monkeypatch, tmp_path) -> No
     assert len(task_lines) == 2
 
     first_record = json.loads(log_lines[0])
+    assert "test_experiment_" in Path(run_paths.run_dir).name
     assert first_record["run_metadata"]["backend"]["model_name"] == "test-model"
     assert first_record["iteration"] == 1
     assert len(first_record["agent_attempts"]) == 2
     assert first_record["selection"]["selected_agents"]
+    assert "sampling_parameters" in first_record["agent_attempts"][0]["personality"]
 
     summary = json.loads(Path(run_paths.summary_path).read_text(encoding="utf-8"))
     assert summary["run_metadata"]["backend"]["model_name"] == "test-model"
     assert summary["total_tasks"] == 2
     assert summary["total_attempts"] == 4
+    assert all(call["sampling_parameters"] is not None for call in stub_backend.calls)

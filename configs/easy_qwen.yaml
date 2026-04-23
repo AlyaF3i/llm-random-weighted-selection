@@ -1,3 +1,4 @@
+experiment_name: easy_qwen_9b
 seed: 20260405
 iterations: 100
 personalities_dir: personalities
@@ -6,6 +7,7 @@ personalities:
     always_correct: 2
     always_nice_teacher: 2
     sometimes_correct: 2
+  sampling_parameters_path: configs/personality_sampling.json
 paths:
   output_root: artifacts
   runs_dirname: runs
@@ -21,6 +23,8 @@ backend:
   model_name: qwen3.5:9b
   timeout_seconds: 300.0
   temperature: 0.0
+  p_sample: 0.9
+  k_sample: 40
 selection:
   epsilon: 0.10
   agents_per_task: 3

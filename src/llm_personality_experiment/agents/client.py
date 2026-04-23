@@ -46,4 +46,8 @@ class AgentRunner:
             "- Include a short supportive feedback message for the student.\n\n"
             f"EXAM:\n{json.dumps(task.to_dict(), sort_keys=True)}"
         )
-        return self._backend.generate(system_prompt="", user_prompt=user_prompt)
+        return self._backend.generate(
+            system_prompt="",
+            user_prompt=user_prompt,
+            sampling_parameters=personality.sampling_parameters,
+        )

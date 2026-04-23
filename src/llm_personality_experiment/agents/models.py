@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+from llm_personality_experiment.agents.sampling import SamplingParameters
 from llm_personality_experiment.scoring.models import AgentMetrics
 
 
@@ -15,11 +16,13 @@ class PersonalityDefinition:
     name: str
     prompt_text: str
     source_path: Path
+    sampling_parameters: SamplingParameters
 
-    def to_dict(self) -> dict[str, str]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "name": self.name,
             "source_path": str(self.source_path),
+            "sampling_parameters": self.sampling_parameters.model_dump(mode="json"),
         }
 
 

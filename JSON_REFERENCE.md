@@ -19,12 +19,17 @@ Top-level keys:
 ### `run_id`
 
 - Type: string
-- Meaning: UTC timestamp-based run identifier, also used as the run folder name.
+- Meaning: full run folder name, built as `<experiment_name>_<timestamp>`.
+
+### `experiment_name`
+
+- Type: string
+- Meaning: human-readable experiment label from the YAML config.
 
 ### `created_at_utc`
 
 - Type: string
-- Meaning: UTC creation timestamp stored in the same compact format as `run_id`.
+- Meaning: UTC timestamp component used inside `run_id`.
 
 ### `backend`
 
@@ -38,6 +43,8 @@ Keys include:
 - `model_name`
 - `timeout_seconds`
 - `temperature`
+- `p_sample`
+- `k_sample`
 
 ### `selection`
 
@@ -112,6 +119,8 @@ Keys include:
 
 - `dir`
 - `duplication`
+- `sampling_parameters_path`
+- `sampling_profiles`
 - `loaded_agent_names`
 - `loaded_personalities`
 - `total_agents`
@@ -293,6 +302,18 @@ Each `agent_attempts[]` entry contains:
 - Meaning: personality metadata with:
   - `name`
   - `source_path`
+  - `sampling_parameters`
+
+### `agent_attempts[].personality.sampling_parameters`
+
+- Type: object
+- Meaning: the exact generation parameters used for that personality.
+
+Keys:
+
+- `temperature`
+- `p_sample`
+- `k_sample`
 
 ### `agent_attempts[].interactions_before`
 

@@ -7,13 +7,19 @@ from dataclasses import dataclass
 from typing import Protocol
 from urllib import error, request
 
+from llm_personality_experiment.agents.sampling import SamplingParameters
 from llm_personality_experiment.config import BackendConfig
 
 
 class ModelBackend(Protocol):
     """Protocol implemented by concrete backend adapters."""
 
-    def generate(self, system_prompt: str, user_prompt: str) -> str:
+    def generate(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        sampling_parameters: SamplingParameters | None = None,
+    ) -> str:
         """Generate a response from the model."""
 
 
@@ -23,11 +29,17 @@ class OllamaBackend:
 
     config: BackendConfig
 
-    def generate(self, system_prompt: str, user_prompt: str) -> str:
+    def generate(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        sampling_parameters: SamplingParameters | None = None,
+    ) -> str:
         messages: list[dict[str, str]] = []
         if system_prompt.strip():
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": user_prompt})
+        resolved_sampling = sampling_parameters or SamplingParameters.from_backend_defaults(self.config)
 
         payload = json.dumps(
             {
@@ -36,7 +48,9 @@ class OllamaBackend:
                 "format": "json",
                 "messages": messages,
                 "options": {
-                    "temperature": self.config.temperature,
+                    "temperature": resolved_sampling.temperature,
+                    "top_p": resolved_sampling.p_sample,
+                    "top_k": resolved_sampling.k_sample,
                 },
             }
         ).encode("utf-8")

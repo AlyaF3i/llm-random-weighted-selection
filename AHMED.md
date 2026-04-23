@@ -74,6 +74,7 @@ Why:
 - shorter runs than the default config
 - `agents_per_task: 2`, so two agents answer the same exam each iteration
 - duplicated personalities already configured for comparison
+- per-personality sampling settings come from `configs/personality_sampling.json`
 - uses `qwen3.5:9b`
 
 ## 7. Run The Experiment
@@ -89,7 +90,7 @@ The command prints a JSON object with the output paths for the run directory, lo
 Each run creates a folder under:
 
 ```text
-artifacts\runs\<run_id>\
+artifacts\runs\<experiment_name>_<timestamp>\
 ```
 
 Important files inside it:
@@ -100,6 +101,8 @@ Important files inside it:
 - `summary.json` = aggregate run metrics
 - `config_snapshot.yaml` = exact validated config used
 - `analysis\` = generated plots
+
+The `experiment_name` comes from the YAML config and is saved in the folder name and metadata.
 
 Main result files:
 
@@ -137,12 +140,23 @@ This matters if you compare different models later.
 Stored automatically:
 
 - the backend model name
-- provider, base URL, timeout, and temperature
+- provider, base URL, timeout, temperature, `p_sample`, and `k_sample`
 - `agents_per_task`
 - selection epsilon and metric weights
 - full task-generation settings
 - personality duplication settings
+- per-personality sampling profiles
 - the full validated config snapshot
+
+Editable sampling file:
+
+- [configs/personality_sampling.json](C:/Users/user/Desktop/study/Algorithms/project/configs/personality_sampling.json)
+
+That file controls each prompt's:
+
+- `temperature`
+- `p_sample`
+- `k_sample`
 
 You can inspect those in:
 

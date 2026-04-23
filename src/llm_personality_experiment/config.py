@@ -25,10 +25,13 @@ class BackendConfig(BaseModel):
     model_name: str
     timeout_seconds: float = 60.0
     temperature: float = 0.0
+    p_sample: float = Field(default=0.9, ge=0.0, le=1.0)
+    k_sample: int = Field(default=40, ge=1)
 
 
 class PersonalitiesConfig(BaseModel):
     duplication: dict[str, int] = Field(default_factory=dict)
+    sampling_parameters_path: str = "configs/personality_sampling.json"
 
     @model_validator(mode="after")
     def validate_duplication(self) -> "PersonalitiesConfig":
@@ -127,6 +130,7 @@ class AnalysisConfig(BaseModel):
 
 
 class ExperimentConfig(BaseModel):
+    experiment_name: str = "experiment"
     seed: int
     iterations: int = Field(ge=1)
     personalities_dir: str = "personalities"
@@ -143,6 +147,8 @@ class ExperimentConfig(BaseModel):
 
     @model_validator(mode="after")
     def validate_scenario_mix(self) -> "ExperimentConfig":
+        if not self.experiment_name.strip():
+            raise ValueError("experiment_name must not be empty")
         required = {"addition", "subtraction", "multiplication", "mixed_review"}
         if set(self.scenario_mix) != required:
             raise ValueError(f"scenario_mix must contain exactly {sorted(required)}")

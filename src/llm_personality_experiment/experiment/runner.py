@@ -9,6 +9,7 @@ from llm_personality_experiment.agents.backend import create_backend
 from llm_personality_experiment.agents.client import AgentRunner
 from llm_personality_experiment.agents.models import AgentState
 from llm_personality_experiment.agents.personality import load_personalities
+from llm_personality_experiment.agents.sampling import load_sampling_profiles
 from llm_personality_experiment.analysis.plots import generate_plots
 from llm_personality_experiment.analysis.summary import write_summary
 from llm_personality_experiment.config import ExperimentConfig, dump_config
@@ -154,6 +155,7 @@ class ExperimentRunner:
 
     def _build_run_metadata(self, run_id: str, agents: list[AgentState]) -> dict[str, object]:
         return {
+            "experiment_name": self._config.experiment_name,
             "run_id": run_id,
             "created_at_utc": run_id,
             "backend": self._config.backend.model_dump(mode="json"),
@@ -166,6 +168,11 @@ class ExperimentRunner:
             "personalities": {
                 "dir": self._config.personalities_dir,
                 "duplication": dict(self._config.personalities.duplication),
+                "sampling_parameters_path": self._config.personalities.sampling_parameters_path,
+                "sampling_profiles": {
+                    agent.personality.name: agent.personality.sampling_parameters.model_dump(mode="json")
+                    for agent in agents
+                },
                 "loaded_agent_names": [agent.name for agent in agents],
                 "loaded_personalities": sorted({agent.personality.name for agent in agents}),
                 "total_agents": len(agents),
@@ -174,7 +181,14 @@ class ExperimentRunner:
         }
 
     def _create_agents(self) -> list[AgentState]:
-        personalities = load_personalities(self._config.personalities_dir)
+        personalities_dir = Path(self._config.personalities_dir)
+        personality_names = sorted(path.stem for path in personalities_dir.glob("*.md"))
+        sampling_profiles = load_sampling_profiles(
+            path=self._config.personalities.sampling_parameters_path,
+            personality_names=personality_names,
+            backend_config=self._config.backend,
+        )
+        personalities = load_personalities(personalities_dir, sampling_profiles=sampling_profiles)
         initial_metrics = AgentMetrics.from_dict(self._config.metrics.initial)
         agents: list[AgentState] = []
         for personality in personalities:
@@ -192,7 +206,8 @@ class ExperimentRunner:
     def _create_run_paths(self) -> RunPaths:
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         output_root = ensure_directory(self._config.paths.output_root)
-        run_dir = ensure_directory(Path(output_root) / self._config.paths.runs_dirname / timestamp)
+        run_name = f"{self._slugify_name(self._config.experiment_name)}_{timestamp}"
+        run_dir = ensure_directory(Path(output_root) / self._config.paths.runs_dirname / run_name)
         analysis_dir = ensure_directory(run_dir / self._config.paths.analysis_dirname)
         return RunPaths(
             run_dir=str(run_dir),
@@ -203,3 +218,8 @@ class ExperimentRunner:
             summary_path=str(run_dir / self._config.paths.summary_filename),
             config_snapshot_path=str(run_dir / self._config.paths.config_snapshot_filename),
         )
+
+    def _slugify_name(self, value: str) -> str:
+        cleaned = "".join(character.lower() if character.isalnum() else "_" for character in value.strip())
+        collapsed = "_".join(part for part in cleaned.split("_") if part)
+        return collapsed or "experiment"
