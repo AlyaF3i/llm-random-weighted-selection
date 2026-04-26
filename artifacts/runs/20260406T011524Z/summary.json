@@ -1,0 +1,792 @@
+{
+  "agent_selection_counts": {
+    "always_correct__01": 21,
+    "always_correct__02": 31,
+    "always_nice_teacher__01": 32,
+    "always_nice_teacher__02": 27,
+    "bold_searcher": 27,
+    "cautious_analyst": 32,
+    "efficiency_hunter": 25,
+    "minimalist_executor": 20,
+    "patient_verifier": 23,
+    "skeptical_auditor": 27,
+    "sometimes_correct__01": 17,
+    "sometimes_correct__02": 18
+  },
+  "aggregate_windows": [
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 6,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.4916666666666667
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 12,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.6749999999999999
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 18,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.6666666666666666
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 24,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.75
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 30,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.7000000000000001
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 36,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.5333333333333333
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 42,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.7916666666666666
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 48,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.875
+    },
+    {
+      "completeness": 0.6666666666666666,
+      "correctness": 0.6666666666666666,
+      "end_iteration": 54,
+      "failure_rate": 0.3333333333333333,
+      "reliability": 0.6666666666666666,
+      "supportiveness": 0.5166666666666667
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 60,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.85
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 66,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.725
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 72,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.8083333333333332
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 78,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.8250000000000001
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 84,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.725
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 90,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.7083333333333334
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 96,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.6166666666666667
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 102,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.9166666666666666
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 108,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.7666666666666666
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 114,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.725
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 120,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.5166666666666667
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 126,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.7916666666666666
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 132,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.6416666666666667
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 138,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.8083333333333332
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 144,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.8333333333333334
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 150,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.9166666666666666,
+      "supportiveness": 0.6166666666666667
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 156,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.6
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 162,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.75
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 168,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.5916666666666667
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 174,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.8333333333333334
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 180,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.8333333333333334
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 186,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.7000000000000001
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 192,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.85
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 198,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.725
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 204,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.6166666666666667
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 210,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.6416666666666667
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 216,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.8249999999999998
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 222,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.55
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 228,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.7916666666666666
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 234,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.7416666666666666
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 240,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.9166666666666666,
+      "supportiveness": 0.5750000000000001
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 246,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.65
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 252,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.9583333333333334
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 258,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.7083333333333334
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 264,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.85
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 270,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.7166666666666668
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 276,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.8250000000000001
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 282,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.6833333333333332
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 288,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.85
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 294,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.8250000000000001
+    },
+    {
+      "completeness": 1.0,
+      "correctness": 1.0,
+      "end_iteration": 300,
+      "failure_rate": 0.0,
+      "reliability": 1.0,
+      "supportiveness": 0.6250000000000001
+    }
+  ],
+  "average_agent_metrics": {
+    "always_correct__01": {
+      "completeness": 0.736833068125363,
+      "correctness": 0.6710413351567035,
+      "reliability": 0.736833068125363,
+      "supportiveness": 0.6608520015535946
+    },
+    "always_correct__02": {
+      "completeness": 0.777683614194006,
+      "correctness": 0.7221045177425073,
+      "reliability": 0.777683614194006,
+      "supportiveness": 0.6667115430044145
+    },
+    "always_nice_teacher__01": {
+      "completeness": 0.7525290597928547,
+      "correctness": 0.6987639690741879,
+      "reliability": 0.7525290597928547,
+      "supportiveness": 0.6519859815435017
+    },
+    "always_nice_teacher__02": {
+      "completeness": 0.7625392406244799,
+      "correctness": 0.7031740507805997,
+      "reliability": 0.7625392406244799,
+      "supportiveness": 0.6649146994294084
+    },
+    "bold_searcher": {
+      "completeness": 0.7625392406244799,
+      "correctness": 0.7031740507805997,
+      "reliability": 0.7625392406244799,
+      "supportiveness": 0.5148708420301996
+    },
+    "cautious_analyst": {
+      "completeness": 0.7812457612004255,
+      "correctness": 0.7265572015005317,
+      "reliability": 0.7812457612004255,
+      "supportiveness": 0.6193212179549208
+    },
+    "efficiency_hunter": {
+      "completeness": 0.754392339273479,
+      "correctness": 0.6929904240918486,
+      "reliability": 0.754392339273479,
+      "supportiveness": 0.6384218512929248
+    },
+    "minimalist_executor": {
+      "completeness": 0.7321611682621156,
+      "correctness": 0.6652014603276444,
+      "reliability": 0.7321611682621156,
+      "supportiveness": 0.5340186729926847
+    },
+    "patient_verifier": {
+      "completeness": 0.745831846403088,
+      "correctness": 0.6822898080038599,
+      "reliability": 0.745831846403088,
+      "supportiveness": 0.7036796115497588
+    },
+    "skeptical_auditor": {
+      "completeness": 0.7625392406244799,
+      "correctness": 0.7031740507805997,
+      "reliability": 0.7625392406244799,
+      "supportiveness": 0.690980117556948
+    },
+    "sometimes_correct__01": {
+      "completeness": 0.4708311161520599,
+      "correctness": 0.38217471748052245,
+      "reliability": 0.47905758168294227,
+      "supportiveness": 0.37034503239734506
+    },
+    "sometimes_correct__02": {
+      "completeness": 0.3712904213532263,
+      "correctness": 0.32544997764822664,
+      "reliability": 0.387952632345299,
+      "supportiveness": 0.2883726120243088
+    }
+  },
+  "failure_counts": {
+    "invalid_json": 22,
+    "schema_validation_failed": 2
+  },
+  "format_failure_count": 24,
+  "run_metadata": {
+    "backend": {
+      "base_url": "http://127.0.0.1:11434",
+      "model_name": "qwen3.5:9b",
+      "provider": "ollama",
+      "temperature": 0.0,
+      "timeout_seconds": 300.0
+    },
+    "config": {
+      "analysis": {
+        "aggregate_every": 6,
+        "generate_after_run": true
+      },
+      "backend": {
+        "base_url": "http://127.0.0.1:11434",
+        "model_name": "qwen3.5:9b",
+        "provider": "ollama",
+        "temperature": 0.0,
+        "timeout_seconds": 300.0
+      },
+      "evaluation": {
+        "feedback": {
+          "banned_keywords": [
+            "bad",
+            "stupid",
+            "lazy",
+            "terrible",
+            "fail"
+          ],
+          "coaching_keywords": [
+            "keep practicing",
+            "try again",
+            "check",
+            "next time",
+            "keep going"
+          ],
+          "min_words": 6,
+          "positive_keywords": [
+            "great",
+            "good job",
+            "well done",
+            "proud",
+            "excellent",
+            "nice work"
+          ]
+        }
+      },
+      "iterations": 100,
+      "metrics": {
+        "baseline": {
+          "completeness": 0.5,
+          "correctness": 0.5,
+          "reliability": 0.5,
+          "supportiveness": 0.5
+        },
+        "initial": {
+          "completeness": 0.6,
+          "correctness": 0.5,
+          "reliability": 0.6,
+          "supportiveness": 0.55
+        },
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "paths": {
+        "analysis_dirname": "analysis",
+        "config_snapshot_filename": "config_snapshot.yaml",
+        "logs_filename": "experiment.jsonl",
+        "metadata_filename": "run_metadata.json",
+        "output_root": "artifacts",
+        "runs_dirname": "runs",
+        "summary_filename": "summary.json"
+      },
+      "personalities": {
+        "duplication": {
+          "always_correct": 2,
+          "always_nice_teacher": 2,
+          "sometimes_correct": 2
+        }
+      },
+      "personalities_dir": "personalities",
+      "scenario_mix": {
+        "addition": 0.5,
+        "mixed_review": 0.1,
+        "multiplication": 0.15,
+        "subtraction": 0.25
+      },
+      "seed": 20260405,
+      "selection": {
+        "agents_per_task": 3,
+        "epsilon": 0.1,
+        "metric_weights": {
+          "completeness": 0.2,
+          "correctness": 0.45,
+          "reliability": 0.2,
+          "supportiveness": 0.15
+        }
+      },
+      "task_generation": {
+        "grade_label": "elementary school",
+        "mixed_operation_pool": [
+          "addition",
+          "subtraction",
+          "multiplication"
+        ],
+        "operations": {
+          "addition": {
+            "max_operand": 10,
+            "min_operand": 0,
+            "non_negative_only": true
+          },
+          "multiplication": {
+            "max_operand": 6,
+            "min_operand": 0,
+            "non_negative_only": true
+          },
+          "subtraction": {
+            "max_operand": 10,
+            "min_operand": 0,
+            "non_negative_only": true
+          }
+        },
+        "points_per_question": 1,
+        "questions_per_exam_max": 6,
+        "questions_per_exam_min": 4
+      },
+      "updates": {
+        "above_baseline": {
+          "decrease_rate": 0.07,
+          "increase_rate": 0.04
+        },
+        "below_baseline": {
+          "decrease_rate": 0.18,
+          "increase_rate": 0.1
+        }
+      }
+    },
+    "created_at_utc": "20260406T011524Z",
+    "evaluation": {
+      "feedback": {
+        "banned_keywords": [
+          "bad",
+          "stupid",
+          "lazy",
+          "terrible",
+          "fail"
+        ],
+        "coaching_keywords": [
+          "keep practicing",
+          "try again",
+          "check",
+          "next time",
+          "keep going"
+        ],
+        "min_words": 6,
+        "positive_keywords": [
+          "great",
+          "good job",
+          "well done",
+          "proud",
+          "excellent",
+          "nice work"
+        ]
+      }
+    },
+    "metrics": {
+      "baseline": {
+        "completeness": 0.5,
+        "correctness": 0.5,
+        "reliability": 0.5,
+        "supportiveness": 0.5
+      },
+      "initial": {
+        "completeness": 0.6,
+        "correctness": 0.5,
+        "reliability": 0.6,
+        "supportiveness": 0.55
+      },
+      "max_value": 1.0,
+      "min_value": 0.0
+    },
+    "personalities": {
+      "dir": "personalities",
+      "duplication": {
+        "always_correct": 2,
+        "always_nice_teacher": 2,
+        "sometimes_correct": 2
+      },
+      "loaded_agent_names": [
+        "always_correct__01",
+        "always_correct__02",
+        "always_nice_teacher__01",
+        "always_nice_teacher__02",
+        "bold_searcher",
+        "cautious_analyst",
+        "efficiency_hunter",
+        "minimalist_executor",
+        "patient_verifier",
+        "skeptical_auditor",
+        "sometimes_correct__01",
+        "sometimes_correct__02"
+      ],
+      "loaded_personalities": [
+        "always_correct",
+        "always_nice_teacher",
+        "bold_searcher",
+        "cautious_analyst",
+        "efficiency_hunter",
+        "minimalist_executor",
+        "patient_verifier",
+        "skeptical_auditor",
+        "sometimes_correct"
+      ],
+      "total_agents": 12
+    },
+    "run_id": "20260406T011524Z",
+    "scenario_mix": {
+      "addition": 0.5,
+      "mixed_review": 0.1,
+      "multiplication": 0.15,
+      "subtraction": 0.25
+    },
+    "selection": {
+      "agents_per_task": 3,
+      "epsilon": 0.1,
+      "metric_weights": {
+        "completeness": 0.2,
+        "correctness": 0.45,
+        "reliability": 0.2,
+        "supportiveness": 0.15
+      }
+    },
+    "task_generation": {
+      "grade_label": "elementary school",
+      "mixed_operation_pool": [
+        "addition",
+        "subtraction",
+        "multiplication"
+      ],
+      "operations": {
+        "addition": {
+          "max_operand": 10,
+          "min_operand": 0,
+          "non_negative_only": true
+        },
+        "multiplication": {
+          "max_operand": 6,
+          "min_operand": 0,
+          "non_negative_only": true
+        },
+        "subtraction": {
+          "max_operand": 10,
+          "min_operand": 0,
+          "non_negative_only": true
+        }
+      },
+      "points_per_question": 1,
+      "questions_per_exam_max": 6,
+      "questions_per_exam_min": 4
+    },
+    "updates": {
+      "above_baseline": {
+        "decrease_rate": 0.07,
+        "increase_rate": 0.04
+      },
+      "below_baseline": {
+        "decrease_rate": 0.18,
+        "increase_rate": 0.1
+      }
+    }
+  },
+  "scenario_scores": {
+    "addition": {
+      "completeness": 0.9365079365079365,
+      "correctness": 0.9365079365079365,
+      "supportiveness": 0.7869047619047617
+    },
+    "mixed_review": {
+      "completeness": 0.9583333333333334,
+      "correctness": 0.9583333333333334,
+      "supportiveness": 0.7895833333333334
+    },
+    "multiplication": {
+      "completeness": 0.873015873015873,
+      "correctness": 0.873015873015873,
+      "supportiveness": 0.6428571428571431
+    },
+    "subtraction": {
+      "completeness": 0.9195402298850575,
+      "correctness": 0.9195402298850575,
+      "supportiveness": 0.6729885057471267
+    }
+  },
+  "total_attempts": 300,
+  "total_tasks": 100
+}

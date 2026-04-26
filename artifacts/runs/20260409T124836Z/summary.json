@@ -1,0 +1,2309 @@
+{
+  "agent_outcomes": {
+    "always_correct__01": {
+      "attempts": 26,
+      "failure_rate": 0.34615384615384615,
+      "failure_types": {
+        "invalid_json": 9
+      },
+      "failures": 9,
+      "successes": 17
+    },
+    "always_correct__02": {
+      "attempts": 36,
+      "failure_rate": 0.2222222222222222,
+      "failure_types": {
+        "invalid_json": 8
+      },
+      "failures": 8,
+      "successes": 28
+    },
+    "always_nice_teacher__01": {
+      "attempts": 22,
+      "failure_rate": 0.6818181818181818,
+      "failure_types": {
+        "invalid_json": 15
+      },
+      "failures": 15,
+      "successes": 7
+    },
+    "always_nice_teacher__02": {
+      "attempts": 26,
+      "failure_rate": 0.5,
+      "failure_types": {
+        "invalid_json": 13
+      },
+      "failures": 13,
+      "successes": 13
+    },
+    "bold_searcher": {
+      "attempts": 27,
+      "failure_rate": 0.3333333333333333,
+      "failure_types": {
+        "invalid_json": 9
+      },
+      "failures": 9,
+      "successes": 18
+    },
+    "cautious_analyst": {
+      "attempts": 39,
+      "failure_rate": 0.28205128205128205,
+      "failure_types": {
+        "invalid_json": 11
+      },
+      "failures": 11,
+      "successes": 28
+    },
+    "efficiency_hunter": {
+      "attempts": 25,
+      "failure_rate": 0.04,
+      "failure_types": {
+        "invalid_json": 1
+      },
+      "failures": 1,
+      "successes": 24
+    },
+    "minimalist_executor": {
+      "attempts": 28,
+      "failure_rate": 0.10714285714285714,
+      "failure_types": {
+        "invalid_json": 3
+      },
+      "failures": 3,
+      "successes": 25
+    },
+    "patient_verifier": {
+      "attempts": 29,
+      "failure_rate": 0.20689655172413793,
+      "failure_types": {
+        "invalid_json": 6
+      },
+      "failures": 6,
+      "successes": 23
+    },
+    "skeptical_auditor": {
+      "attempts": 16,
+      "failure_rate": 0.8125,
+      "failure_types": {
+        "invalid_json": 13
+      },
+      "failures": 13,
+      "successes": 3
+    },
+    "sometimes_correct__01": {
+      "attempts": 12,
+      "failure_rate": 1.0,
+      "failure_types": {
+        "invalid_json": 12
+      },
+      "failures": 12,
+      "successes": 0
+    },
+    "sometimes_correct__02": {
+      "attempts": 14,
+      "failure_rate": 1.0,
+      "failure_types": {
+        "invalid_json": 14
+      },
+      "failures": 14,
+      "successes": 0
+    }
+  },
+  "agent_selection_counts": {
+    "always_correct__01": 26,
+    "always_correct__02": 36,
+    "always_nice_teacher__01": 22,
+    "always_nice_teacher__02": 26,
+    "bold_searcher": 27,
+    "cautious_analyst": 39,
+    "efficiency_hunter": 25,
+    "minimalist_executor": 28,
+    "patient_verifier": 29,
+    "skeptical_auditor": 16,
+    "sometimes_correct__01": 12,
+    "sometimes_correct__02": 14
+  },
+  "aggregate_windows": [
+    {
+      "completeness": 0.5,
+      "correctness": 0.5,
+      "end_iteration": 6,
+      "failure_rate": 0.5,
+      "reliability": 0.5,
+      "supportiveness": 0.36666666666666664
+    },
+    {
+      "completeness": 0.5555555555555556,
+      "correctness": 0.5555555555555556,
+      "end_iteration": 12,
+      "failure_rate": 0.4444444444444444,
+      "reliability": 0.5555555555555556,
+      "supportiveness": 0.42777777777777776
+    },
+    {
+      "completeness": 0.7222222222222222,
+      "correctness": 0.7222222222222222,
+      "end_iteration": 18,
+      "failure_rate": 0.2777777777777778,
+      "reliability": 0.7222222222222222,
+      "supportiveness": 0.6027777777777777
+    },
+    {
+      "completeness": 0.6111111111111112,
+      "correctness": 0.6111111111111112,
+      "end_iteration": 24,
+      "failure_rate": 0.3888888888888889,
+      "reliability": 0.6111111111111112,
+      "supportiveness": 0.5055555555555555
+    },
+    {
+      "completeness": 0.6666666666666666,
+      "correctness": 0.6666666666666666,
+      "end_iteration": 30,
+      "failure_rate": 0.3333333333333333,
+      "reliability": 0.6666666666666666,
+      "supportiveness": 0.49166666666666664
+    },
+    {
+      "completeness": 0.4444444444444444,
+      "correctness": 0.4444444444444444,
+      "end_iteration": 36,
+      "failure_rate": 0.5555555555555556,
+      "reliability": 0.4444444444444444,
+      "supportiveness": 0.3305555555555555
+    },
+    {
+      "completeness": 0.4444444444444444,
+      "correctness": 0.4444444444444444,
+      "end_iteration": 42,
+      "failure_rate": 0.5555555555555556,
+      "reliability": 0.4444444444444444,
+      "supportiveness": 0.3888888888888889
+    },
+    {
+      "completeness": 0.6111111111111112,
+      "correctness": 0.6111111111111112,
+      "end_iteration": 48,
+      "failure_rate": 0.3888888888888889,
+      "reliability": 0.6111111111111112,
+      "supportiveness": 0.5138888888888888
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 54,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.6944444444444444
+    },
+    {
+      "completeness": 0.6111111111111112,
+      "correctness": 0.6111111111111112,
+      "end_iteration": 60,
+      "failure_rate": 0.3888888888888889,
+      "reliability": 0.6111111111111112,
+      "supportiveness": 0.44166666666666665
+    },
+    {
+      "completeness": 0.5,
+      "correctness": 0.5,
+      "end_iteration": 66,
+      "failure_rate": 0.5,
+      "reliability": 0.5,
+      "supportiveness": 0.35277777777777775
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 72,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.6444444444444444
+    },
+    {
+      "completeness": 0.6111111111111112,
+      "correctness": 0.6111111111111112,
+      "end_iteration": 78,
+      "failure_rate": 0.3888888888888889,
+      "reliability": 0.6111111111111112,
+      "supportiveness": 0.5055555555555555
+    },
+    {
+      "completeness": 0.6111111111111112,
+      "correctness": 0.6111111111111112,
+      "end_iteration": 84,
+      "failure_rate": 0.3888888888888889,
+      "reliability": 0.6111111111111112,
+      "supportiveness": 0.4861111111111111
+    },
+    {
+      "completeness": 0.6111111111111112,
+      "correctness": 0.6111111111111112,
+      "end_iteration": 90,
+      "failure_rate": 0.3888888888888889,
+      "reliability": 0.6111111111111112,
+      "supportiveness": 0.49444444444444446
+    },
+    {
+      "completeness": 0.6111111111111112,
+      "correctness": 0.6111111111111112,
+      "end_iteration": 96,
+      "failure_rate": 0.3888888888888889,
+      "reliability": 0.6111111111111112,
+      "supportiveness": 0.4555555555555555
+    },
+    {
+      "completeness": 0.8333333333333334,
+      "correctness": 0.8333333333333334,
+      "end_iteration": 100,
+      "failure_rate": 0.16666666666666666,
+      "reliability": 0.8333333333333334,
+      "supportiveness": 0.7000000000000001
+    }
+  ],
+  "average_agent_metrics": {
+    "always_correct__01": {
+      "completeness": 0.5707271041531411,
+      "correctness": 0.551728541033314,
+      "reliability": 0.5707271041531411,
+      "supportiveness": 0.49282531426141557
+    },
+    "always_correct__02": {
+      "completeness": 0.6415791555424506,
+      "correctness": 0.5947666600397414,
+      "reliability": 0.6415791555424506,
+      "supportiveness": 0.5494137492174417
+    },
+    "always_nice_teacher__01": {
+      "completeness": 0.38850695293684995,
+      "correctness": 0.29912867384175157,
+      "reliability": 0.38850695293684995,
+      "supportiveness": 0.33956671220815726
+    },
+    "always_nice_teacher__02": {
+      "completeness": 0.44428528245389565,
+      "correctness": 0.42495266819261823,
+      "reliability": 0.44428528245389565,
+      "supportiveness": 0.3609291065535332
+    },
+    "bold_searcher": {
+      "completeness": 0.5716627762381475,
+      "correctness": 0.5500427377190705,
+      "reliability": 0.5716627762381475,
+      "supportiveness": 0.39842308675052385
+    },
+    "cautious_analyst": {
+      "completeness": 0.6241562712536004,
+      "correctness": 0.5798277789511912,
+      "reliability": 0.6241562712536004,
+      "supportiveness": 0.5714150203683663
+    },
+    "efficiency_hunter": {
+      "completeness": 0.7226571818845641,
+      "correctness": 0.6624284189866843,
+      "reliability": 0.7226571818845641,
+      "supportiveness": 0.6022216493113032
+    },
+    "minimalist_executor": {
+      "completeness": 0.6802322400459283,
+      "correctness": 0.6250921184272399,
+      "reliability": 0.6802322400459283,
+      "supportiveness": 0.5427773356296731
+    },
+    "patient_verifier": {
+      "completeness": 0.643608344614891,
+      "correctness": 0.5899198397391908,
+      "reliability": 0.643608344614891,
+      "supportiveness": 0.5790376209999096
+    },
+    "skeptical_auditor": {
+      "completeness": 0.34273503863652804,
+      "correctness": 0.2936271951538467,
+      "reliability": 0.34273503863652804,
+      "supportiveness": 0.28209718845533627
+    },
+    "sometimes_correct__01": {
+      "completeness": 0.28246714273852797,
+      "correctness": 0.19538179344181042,
+      "reliability": 0.28246714273852797,
+      "supportiveness": 0.23803271303777085
+    },
+    "sometimes_correct__02": {
+      "completeness": 0.25073816209490246,
+      "correctness": 0.17305690106594857,
+      "reliability": 0.25073816209490246,
+      "supportiveness": 0.21099790392565465
+    }
+  },
+  "failure_counts": {
+    "invalid_json": 114
+  },
+  "format_failure_count": 114,
+  "run_metadata": {
+    "backend": {
+      "base_url": "http://127.0.0.1:11434",
+      "model_name": "qwen3.5:27b",
+      "provider": "ollama",
+      "temperature": 0.0,
+      "timeout_seconds": 300.0
+    },
+    "config": {
+      "analysis": {
+        "aggregate_every": 6,
+        "generate_after_run": true
+      },
+      "backend": {
+        "base_url": "http://127.0.0.1:11434",
+        "model_name": "qwen3.5:27b",
+        "provider": "ollama",
+        "temperature": 0.0,
+        "timeout_seconds": 300.0
+      },
+      "evaluation": {
+        "feedback": {
+          "banned_keywords": [
+            "bad",
+            "stupid",
+            "lazy",
+            "terrible",
+            "fail"
+          ],
+          "coaching_keywords": [
+            "keep practicing",
+            "try again",
+            "check",
+            "next time",
+            "keep going"
+          ],
+          "min_words": 6,
+          "positive_keywords": [
+            "great",
+            "good job",
+            "well done",
+            "proud",
+            "excellent",
+            "nice work"
+          ]
+        }
+      },
+      "iterations": 100,
+      "metrics": {
+        "baseline": {
+          "completeness": 0.5,
+          "correctness": 0.5,
+          "reliability": 0.5,
+          "supportiveness": 0.5
+        },
+        "initial": {
+          "completeness": 0.6,
+          "correctness": 0.5,
+          "reliability": 0.6,
+          "supportiveness": 0.55
+        },
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "paths": {
+        "analysis_dirname": "analysis",
+        "config_snapshot_filename": "config_snapshot.yaml",
+        "logs_filename": "experiment.jsonl",
+        "metadata_filename": "run_metadata.json",
+        "output_root": "artifacts",
+        "runs_dirname": "runs",
+        "summary_filename": "summary.json",
+        "tasks_filename": "tasks.jsonl"
+      },
+      "personalities": {
+        "duplication": {
+          "always_correct": 2,
+          "always_nice_teacher": 2,
+          "sometimes_correct": 2
+        }
+      },
+      "personalities_dir": "personalities",
+      "scenario_mix": {
+        "addition": 0.5,
+        "mixed_review": 0.1,
+        "multiplication": 0.15,
+        "subtraction": 0.25
+      },
+      "seed": 20260405,
+      "selection": {
+        "agents_per_task": 3,
+        "epsilon": 0.1,
+        "metric_weights": {
+          "completeness": 0.2,
+          "correctness": 0.45,
+          "reliability": 0.2,
+          "supportiveness": 0.15
+        }
+      },
+      "task_generation": {
+        "grade_label": "elementary school",
+        "mixed_operation_pool": [
+          "addition",
+          "subtraction",
+          "multiplication"
+        ],
+        "operations": {
+          "addition": {
+            "max_operand": 10,
+            "min_operand": 0,
+            "non_negative_only": true
+          },
+          "multiplication": {
+            "max_operand": 6,
+            "min_operand": 0,
+            "non_negative_only": true
+          },
+          "subtraction": {
+            "max_operand": 10,
+            "min_operand": 0,
+            "non_negative_only": true
+          }
+        },
+        "points_per_question": 1,
+        "questions_per_exam_max": 6,
+        "questions_per_exam_min": 4
+      },
+      "updates": {
+        "above_baseline": {
+          "decrease_rate": 0.07,
+          "increase_rate": 0.04
+        },
+        "below_baseline": {
+          "decrease_rate": 0.18,
+          "increase_rate": 0.1
+        }
+      }
+    },
+    "created_at_utc": "20260409T124836Z",
+    "evaluation": {
+      "feedback": {
+        "banned_keywords": [
+          "bad",
+          "stupid",
+          "lazy",
+          "terrible",
+          "fail"
+        ],
+        "coaching_keywords": [
+          "keep practicing",
+          "try again",
+          "check",
+          "next time",
+          "keep going"
+        ],
+        "min_words": 6,
+        "positive_keywords": [
+          "great",
+          "good job",
+          "well done",
+          "proud",
+          "excellent",
+          "nice work"
+        ]
+      }
+    },
+    "metrics": {
+      "baseline": {
+        "completeness": 0.5,
+        "correctness": 0.5,
+        "reliability": 0.5,
+        "supportiveness": 0.5
+      },
+      "initial": {
+        "completeness": 0.6,
+        "correctness": 0.5,
+        "reliability": 0.6,
+        "supportiveness": 0.55
+      },
+      "max_value": 1.0,
+      "min_value": 0.0
+    },
+    "personalities": {
+      "dir": "personalities",
+      "duplication": {
+        "always_correct": 2,
+        "always_nice_teacher": 2,
+        "sometimes_correct": 2
+      },
+      "loaded_agent_names": [
+        "always_correct__01",
+        "always_correct__02",
+        "always_nice_teacher__01",
+        "always_nice_teacher__02",
+        "bold_searcher",
+        "cautious_analyst",
+        "efficiency_hunter",
+        "minimalist_executor",
+        "patient_verifier",
+        "skeptical_auditor",
+        "sometimes_correct__01",
+        "sometimes_correct__02"
+      ],
+      "loaded_personalities": [
+        "always_correct",
+        "always_nice_teacher",
+        "bold_searcher",
+        "cautious_analyst",
+        "efficiency_hunter",
+        "minimalist_executor",
+        "patient_verifier",
+        "skeptical_auditor",
+        "sometimes_correct"
+      ],
+      "total_agents": 12
+    },
+    "run_id": "20260409T124836Z",
+    "scenario_mix": {
+      "addition": 0.5,
+      "mixed_review": 0.1,
+      "multiplication": 0.15,
+      "subtraction": 0.25
+    },
+    "selection": {
+      "agents_per_task": 3,
+      "epsilon": 0.1,
+      "metric_weights": {
+        "completeness": 0.2,
+        "correctness": 0.45,
+        "reliability": 0.2,
+        "supportiveness": 0.15
+      }
+    },
+    "task_generation": {
+      "grade_label": "elementary school",
+      "mixed_operation_pool": [
+        "addition",
+        "subtraction",
+        "multiplication"
+      ],
+      "operations": {
+        "addition": {
+          "max_operand": 10,
+          "min_operand": 0,
+          "non_negative_only": true
+        },
+        "multiplication": {
+          "max_operand": 6,
+          "min_operand": 0,
+          "non_negative_only": true
+        },
+        "subtraction": {
+          "max_operand": 10,
+          "min_operand": 0,
+          "non_negative_only": true
+        }
+      },
+      "points_per_question": 1,
+      "questions_per_exam_max": 6,
+      "questions_per_exam_min": 4
+    },
+    "updates": {
+      "above_baseline": {
+        "decrease_rate": 0.07,
+        "increase_rate": 0.04
+      },
+      "below_baseline": {
+        "decrease_rate": 0.18,
+        "increase_rate": 0.1
+      }
+    }
+  },
+  "scenario_scores": {
+    "addition": {
+      "completeness": 0.626984126984127,
+      "correctness": 0.626984126984127,
+      "reliability": 0.626984126984127,
+      "supportiveness": 0.5087301587301587
+    },
+    "mixed_review": {
+      "completeness": 0.5416666666666666,
+      "correctness": 0.5416666666666666,
+      "reliability": 0.5416666666666666,
+      "supportiveness": 0.44166666666666665
+    },
+    "multiplication": {
+      "completeness": 0.6349206349206349,
+      "correctness": 0.6349206349206349,
+      "reliability": 0.6349206349206349,
+      "supportiveness": 0.5000000000000001
+    },
+    "subtraction": {
+      "completeness": 0.6206896551724138,
+      "correctness": 0.6206896551724138,
+      "reliability": 0.6206896551724138,
+      "supportiveness": 0.4695402298850575
+    }
+  },
+  "task_failure_overview": [
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 1,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "sometimes_correct__02",
+        "bold_searcher",
+        "minimalist_executor"
+      ],
+      "successful_agents": [
+        "bold_searcher",
+        "minimalist_executor"
+      ]
+    },
+    {
+      "failing_agents": [
+        "skeptical_auditor"
+      ],
+      "iteration": 2,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "skeptical_auditor",
+        "always_correct__02",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "always_correct__02",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02"
+      ],
+      "iteration": 3,
+      "question_count": 5,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "minimalist_executor",
+        "always_nice_teacher__02",
+        "skeptical_auditor"
+      ],
+      "successful_agents": [
+        "minimalist_executor",
+        "skeptical_auditor"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02",
+        "skeptical_auditor",
+        "sometimes_correct__01"
+      ],
+      "iteration": 4,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "sometimes_correct__02",
+        "skeptical_auditor",
+        "sometimes_correct__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 5,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "sometimes_correct__02",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "always_nice_teacher__02",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "minimalist_executor",
+        "skeptical_auditor"
+      ],
+      "iteration": 6,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "minimalist_executor",
+        "always_nice_teacher__02",
+        "skeptical_auditor"
+      ],
+      "successful_agents": [
+        "always_nice_teacher__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 7,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "cautious_analyst",
+        "always_nice_teacher__01",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": [
+        "cautious_analyst",
+        "always_nice_teacher__01"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 8,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "patient_verifier",
+        "always_correct__02",
+        "efficiency_hunter"
+      ],
+      "successful_agents": [
+        "patient_verifier",
+        "always_correct__02",
+        "efficiency_hunter"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_correct__01",
+        "sometimes_correct__01"
+      ],
+      "iteration": 9,
+      "question_count": 5,
+      "scenario_type": "mixed_review",
+      "selected_agents": [
+        "always_correct__01",
+        "patient_verifier",
+        "sometimes_correct__01"
+      ],
+      "successful_agents": [
+        "patient_verifier"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "bold_searcher",
+        "cautious_analyst"
+      ],
+      "iteration": 10,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "bold_searcher",
+        "cautious_analyst"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 11,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "sometimes_correct__02",
+        "efficiency_hunter",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01"
+      ],
+      "iteration": 12,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "patient_verifier",
+        "bold_searcher",
+        "sometimes_correct__01"
+      ],
+      "successful_agents": [
+        "patient_verifier",
+        "bold_searcher"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 13,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "efficiency_hunter",
+        "always_correct__01",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "always_correct__01",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 14,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__02",
+        "minimalist_executor",
+        "patient_verifier"
+      ],
+      "successful_agents": [
+        "always_correct__02",
+        "minimalist_executor",
+        "patient_verifier"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 15,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "always_correct__01",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": [
+        "always_nice_teacher__02",
+        "always_correct__01"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "always_correct__01"
+      ],
+      "iteration": 16,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__02",
+        "always_correct__01",
+        "efficiency_hunter"
+      ],
+      "successful_agents": [
+        "efficiency_hunter"
+      ]
+    },
+    {
+      "failing_agents": [
+        "skeptical_auditor"
+      ],
+      "iteration": 17,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "bold_searcher",
+        "cautious_analyst",
+        "skeptical_auditor"
+      ],
+      "successful_agents": [
+        "bold_searcher",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01"
+      ],
+      "iteration": 18,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "skeptical_auditor",
+        "always_correct__01"
+      ],
+      "successful_agents": [
+        "skeptical_auditor",
+        "always_correct__01"
+      ]
+    },
+    {
+      "failing_agents": [
+        "cautious_analyst",
+        "skeptical_auditor"
+      ],
+      "iteration": 19,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "cautious_analyst",
+        "skeptical_auditor",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "always_correct__01"
+      ],
+      "iteration": 20,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "always_correct__01",
+        "minimalist_executor"
+      ],
+      "successful_agents": [
+        "minimalist_executor"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 21,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "skeptical_auditor",
+        "minimalist_executor",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "skeptical_auditor",
+        "minimalist_executor",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01"
+      ],
+      "iteration": 22,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__02",
+        "efficiency_hunter"
+      ],
+      "successful_agents": [
+        "always_nice_teacher__02",
+        "efficiency_hunter"
+      ]
+    },
+    {
+      "failing_agents": [
+        "bold_searcher"
+      ],
+      "iteration": 23,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "efficiency_hunter",
+        "patient_verifier",
+        "bold_searcher"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "patient_verifier"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_correct__02"
+      ],
+      "iteration": 24,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "patient_verifier",
+        "always_correct__02",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": [
+        "patient_verifier",
+        "always_nice_teacher__01"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 25,
+      "question_count": 5,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "cautious_analyst",
+        "efficiency_hunter",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": [
+        "cautious_analyst",
+        "efficiency_hunter"
+      ]
+    },
+    {
+      "failing_agents": [
+        "skeptical_auditor"
+      ],
+      "iteration": 26,
+      "question_count": 5,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_correct__01",
+        "cautious_analyst",
+        "skeptical_auditor"
+      ],
+      "successful_agents": [
+        "always_correct__01",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "skeptical_auditor"
+      ],
+      "iteration": 27,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_correct__02",
+        "bold_searcher",
+        "skeptical_auditor"
+      ],
+      "successful_agents": [
+        "always_correct__02",
+        "bold_searcher"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01"
+      ],
+      "iteration": 28,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "minimalist_executor",
+        "always_correct__02",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": [
+        "minimalist_executor",
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__01"
+      ],
+      "iteration": 29,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "cautious_analyst",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": [
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 30,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "cautious_analyst",
+        "always_correct__01",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": [
+        "cautious_analyst",
+        "always_correct__01",
+        "always_nice_teacher__01"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "bold_searcher",
+        "efficiency_hunter"
+      ],
+      "iteration": 31,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_correct__02",
+        "bold_searcher",
+        "efficiency_hunter"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 32,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__01",
+        "cautious_analyst",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": [
+        "always_correct__01",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02",
+        "always_nice_teacher__01"
+      ],
+      "iteration": 33,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "always_nice_teacher__01",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 34,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "patient_verifier",
+        "bold_searcher",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "patient_verifier",
+        "bold_searcher",
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__02",
+        "skeptical_auditor"
+      ],
+      "iteration": 35,
+      "question_count": 6,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__02",
+        "skeptical_auditor"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "cautious_analyst"
+      ],
+      "iteration": 36,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "cautious_analyst",
+        "always_nice_teacher__02",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "always_nice_teacher__02",
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "minimalist_executor"
+      ],
+      "iteration": 37,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "cautious_analyst",
+        "always_nice_teacher__01",
+        "minimalist_executor"
+      ],
+      "successful_agents": [
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "patient_verifier",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 38,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__02",
+        "patient_verifier",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": [
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_correct__01",
+        "cautious_analyst",
+        "sometimes_correct__02"
+      ],
+      "iteration": 39,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__01",
+        "cautious_analyst",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [],
+      "iteration": 40,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "efficiency_hunter",
+        "always_nice_teacher__02",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "always_nice_teacher__02",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "bold_searcher"
+      ],
+      "iteration": 41,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_correct__02",
+        "bold_searcher",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": [
+        "always_correct__02",
+        "always_nice_teacher__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "always_correct__01"
+      ],
+      "iteration": 42,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_correct__02",
+        "always_correct__01",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02"
+      ],
+      "iteration": 43,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "minimalist_executor",
+        "bold_searcher"
+      ],
+      "successful_agents": [
+        "minimalist_executor",
+        "bold_searcher"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 44,
+      "question_count": 5,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "cautious_analyst",
+        "sometimes_correct__02",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "cautious_analyst",
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02",
+        "sometimes_correct__01"
+      ],
+      "iteration": 45,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "patient_verifier",
+        "always_nice_teacher__02",
+        "sometimes_correct__01"
+      ],
+      "successful_agents": [
+        "patient_verifier"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02"
+      ],
+      "iteration": 46,
+      "question_count": 6,
+      "scenario_type": "mixed_review",
+      "selected_agents": [
+        "efficiency_hunter",
+        "minimalist_executor",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "minimalist_executor"
+      ]
+    },
+    {
+      "failing_agents": [
+        "patient_verifier"
+      ],
+      "iteration": 47,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "minimalist_executor",
+        "patient_verifier",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": [
+        "minimalist_executor",
+        "always_nice_teacher__01"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01"
+      ],
+      "iteration": 48,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "bold_searcher",
+        "minimalist_executor"
+      ],
+      "successful_agents": [
+        "bold_searcher",
+        "minimalist_executor"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 49,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "patient_verifier",
+        "cautious_analyst",
+        "efficiency_hunter"
+      ],
+      "successful_agents": [
+        "patient_verifier",
+        "cautious_analyst",
+        "efficiency_hunter"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 50,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "bold_searcher",
+        "cautious_analyst",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": [
+        "bold_searcher",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 51,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "cautious_analyst",
+        "efficiency_hunter",
+        "always_correct__01"
+      ],
+      "successful_agents": [
+        "cautious_analyst",
+        "efficiency_hunter",
+        "always_correct__01"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__01"
+      ],
+      "iteration": 52,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__01",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 53,
+      "question_count": 5,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "efficiency_hunter",
+        "always_nice_teacher__01",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "always_nice_teacher__01",
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 54,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "minimalist_executor",
+        "cautious_analyst",
+        "bold_searcher"
+      ],
+      "successful_agents": [
+        "minimalist_executor",
+        "cautious_analyst",
+        "bold_searcher"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 55,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "bold_searcher",
+        "always_correct__02",
+        "minimalist_executor"
+      ],
+      "successful_agents": [
+        "bold_searcher",
+        "always_correct__02",
+        "minimalist_executor"
+      ]
+    },
+    {
+      "failing_agents": [
+        "bold_searcher",
+        "skeptical_auditor"
+      ],
+      "iteration": 56,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "minimalist_executor",
+        "bold_searcher",
+        "skeptical_auditor"
+      ],
+      "successful_agents": [
+        "minimalist_executor"
+      ]
+    },
+    {
+      "failing_agents": [
+        "skeptical_auditor",
+        "always_correct__01"
+      ],
+      "iteration": 57,
+      "question_count": 6,
+      "scenario_type": "mixed_review",
+      "selected_agents": [
+        "patient_verifier",
+        "skeptical_auditor",
+        "always_correct__01"
+      ],
+      "successful_agents": [
+        "patient_verifier"
+      ]
+    },
+    {
+      "failing_agents": [
+        "patient_verifier",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 58,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__02",
+        "patient_verifier",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": [
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 59,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "minimalist_executor",
+        "always_correct__02",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": [
+        "minimalist_executor",
+        "always_correct__02",
+        "always_nice_teacher__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "minimalist_executor"
+      ],
+      "iteration": 60,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__01",
+        "minimalist_executor",
+        "patient_verifier"
+      ],
+      "successful_agents": [
+        "always_correct__01",
+        "patient_verifier"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 61,
+      "question_count": 5,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "patient_verifier",
+        "sometimes_correct__02",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "patient_verifier",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "sometimes_correct__01"
+      ],
+      "iteration": 62,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__01",
+        "always_nice_teacher__01",
+        "sometimes_correct__01"
+      ],
+      "successful_agents": [
+        "always_correct__01"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 63,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "efficiency_hunter",
+        "always_correct__01",
+        "bold_searcher"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "always_correct__01",
+        "bold_searcher"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "patient_verifier",
+        "always_correct__02"
+      ],
+      "iteration": 64,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "patient_verifier",
+        "always_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01"
+      ],
+      "iteration": 65,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__01",
+        "always_nice_teacher__01",
+        "efficiency_hunter"
+      ],
+      "successful_agents": [
+        "always_correct__01",
+        "efficiency_hunter"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02",
+        "cautious_analyst"
+      ],
+      "iteration": 66,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "efficiency_hunter",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "efficiency_hunter"
+      ]
+    },
+    {
+      "failing_agents": [
+        "bold_searcher",
+        "cautious_analyst"
+      ],
+      "iteration": 67,
+      "question_count": 6,
+      "scenario_type": "mixed_review",
+      "selected_agents": [
+        "bold_searcher",
+        "efficiency_hunter",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "efficiency_hunter"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 68,
+      "question_count": 5,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "patient_verifier",
+        "always_correct__01"
+      ],
+      "successful_agents": [
+        "always_nice_teacher__01",
+        "patient_verifier",
+        "always_correct__01"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 69,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "efficiency_hunter",
+        "patient_verifier",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "patient_verifier",
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 70,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "bold_searcher",
+        "sometimes_correct__02",
+        "patient_verifier"
+      ],
+      "successful_agents": [
+        "bold_searcher",
+        "patient_verifier"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 71,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_correct__02",
+        "minimalist_executor",
+        "efficiency_hunter"
+      ],
+      "successful_agents": [
+        "always_correct__02",
+        "minimalist_executor",
+        "efficiency_hunter"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 72,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "minimalist_executor",
+        "always_correct__01",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": [
+        "minimalist_executor",
+        "always_correct__01",
+        "always_nice_teacher__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "skeptical_auditor"
+      ],
+      "iteration": 73,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "skeptical_auditor",
+        "always_correct__02",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "always_correct__02",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02"
+      ],
+      "iteration": 74,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "cautious_analyst",
+        "bold_searcher"
+      ],
+      "successful_agents": [
+        "cautious_analyst",
+        "bold_searcher"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "skeptical_auditor"
+      ],
+      "iteration": 75,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "skeptical_auditor",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": [
+        "always_nice_teacher__01"
+      ]
+    },
+    {
+      "failing_agents": [
+        "cautious_analyst"
+      ],
+      "iteration": 76,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "cautious_analyst",
+        "efficiency_hunter",
+        "patient_verifier"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "patient_verifier"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02",
+        "cautious_analyst"
+      ],
+      "iteration": 77,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "patient_verifier",
+        "always_nice_teacher__02",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "patient_verifier"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 78,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "efficiency_hunter",
+        "bold_searcher",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "bold_searcher",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "skeptical_auditor",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 79,
+      "question_count": 6,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "skeptical_auditor",
+        "always_nice_teacher__02",
+        "minimalist_executor"
+      ],
+      "successful_agents": [
+        "minimalist_executor"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01"
+      ],
+      "iteration": 80,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "bold_searcher",
+        "efficiency_hunter",
+        "sometimes_correct__01"
+      ],
+      "successful_agents": [
+        "bold_searcher",
+        "efficiency_hunter"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01"
+      ],
+      "iteration": 81,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "bold_searcher",
+        "always_nice_teacher__01",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "bold_searcher",
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 82,
+      "question_count": 5,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_correct__01",
+        "cautious_analyst",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "always_correct__01",
+        "cautious_analyst",
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01"
+      ],
+      "iteration": 83,
+      "question_count": 5,
+      "scenario_type": "mixed_review",
+      "selected_agents": [
+        "patient_verifier",
+        "always_correct__02",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": [
+        "patient_verifier",
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "always_correct__02"
+      ],
+      "iteration": 84,
+      "question_count": 6,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "cautious_analyst",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [
+        "bold_searcher",
+        "always_nice_teacher__01"
+      ],
+      "iteration": 85,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "bold_searcher",
+        "always_nice_teacher__01",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02"
+      ],
+      "iteration": 86,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "sometimes_correct__02",
+        "efficiency_hunter",
+        "minimalist_executor"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "minimalist_executor"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "always_correct__01",
+        "patient_verifier"
+      ],
+      "iteration": 87,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_correct__02",
+        "always_correct__01",
+        "patient_verifier"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "cautious_analyst"
+      ],
+      "iteration": 88,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "minimalist_executor",
+        "efficiency_hunter",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "minimalist_executor",
+        "efficiency_hunter"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 89,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "patient_verifier",
+        "cautious_analyst",
+        "always_correct__01"
+      ],
+      "successful_agents": [
+        "patient_verifier",
+        "cautious_analyst",
+        "always_correct__01"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 90,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "patient_verifier",
+        "always_nice_teacher__02",
+        "always_correct__01"
+      ],
+      "successful_agents": [
+        "patient_verifier",
+        "always_nice_teacher__02",
+        "always_correct__01"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_correct__02"
+      ],
+      "iteration": 91,
+      "question_count": 6,
+      "scenario_type": "mixed_review",
+      "selected_agents": [
+        "minimalist_executor",
+        "always_correct__02",
+        "cautious_analyst"
+      ],
+      "successful_agents": [
+        "minimalist_executor",
+        "cautious_analyst"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 92,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "minimalist_executor",
+        "cautious_analyst",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "minimalist_executor",
+        "cautious_analyst",
+        "always_correct__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02",
+        "cautious_analyst",
+        "always_correct__01"
+      ],
+      "iteration": 93,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "cautious_analyst",
+        "always_correct__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "bold_searcher"
+      ],
+      "iteration": 94,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "patient_verifier",
+        "minimalist_executor",
+        "bold_searcher"
+      ],
+      "successful_agents": [
+        "patient_verifier",
+        "minimalist_executor"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 95,
+      "question_count": 4,
+      "scenario_type": "mixed_review",
+      "selected_agents": [
+        "efficiency_hunter",
+        "always_correct__01",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": [
+        "efficiency_hunter",
+        "always_correct__01",
+        "always_nice_teacher__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "always_correct__01",
+        "patient_verifier"
+      ],
+      "iteration": 96,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_correct__01",
+        "always_nice_teacher__02",
+        "patient_verifier"
+      ],
+      "successful_agents": [
+        "always_nice_teacher__02"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 97,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "minimalist_executor",
+        "bold_searcher",
+        "patient_verifier"
+      ],
+      "successful_agents": [
+        "minimalist_executor",
+        "bold_searcher",
+        "patient_verifier"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 98,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__02",
+        "minimalist_executor",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": [
+        "always_correct__02",
+        "minimalist_executor",
+        "always_nice_teacher__02"
+      ]
+    },
+    {
+      "failing_agents": [
+        "cautious_analyst",
+        "bold_searcher"
+      ],
+      "iteration": 99,
+      "question_count": 6,
+      "scenario_type": "mixed_review",
+      "selected_agents": [
+        "minimalist_executor",
+        "cautious_analyst",
+        "bold_searcher"
+      ],
+      "successful_agents": [
+        "minimalist_executor"
+      ]
+    },
+    {
+      "failing_agents": [],
+      "iteration": 100,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "bold_searcher",
+        "patient_verifier",
+        "always_correct__02"
+      ],
+      "successful_agents": [
+        "bold_searcher",
+        "patient_verifier",
+        "always_correct__02"
+      ]
+    }
+  ],
+  "total_attempts": 300,
+  "total_tasks": 100
+}
