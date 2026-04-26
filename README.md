@@ -78,6 +78,12 @@ Analyze an existing run:
 python -m llm_personality_experiment.cli analyze --run-dir artifacts\runs\<run_id> --aggregate-every 10
 ```
 
+Replay a run live:
+
+```powershell
+python -m llm_personality_experiment.cli replay --run-dir artifacts\runs\<run_id> --family-view
+```
+
 Run tests:
 
 ```powershell

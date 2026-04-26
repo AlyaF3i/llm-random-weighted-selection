@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from llm_personality_experiment.analysis.plots import generate_plots
+from llm_personality_experiment.analysis.replay import launch_weight_replay
 from llm_personality_experiment.analysis.summary import write_summary
 from llm_personality_experiment.config import load_config
 from llm_personality_experiment.experiment.runner import ExperimentRunner
@@ -27,6 +28,15 @@ def main() -> None:
     analyze_parser = subparsers.add_parser("analyze", help="Analyze an existing run directory")
     analyze_parser.add_argument("--run-dir", required=True, help="Path to a previous run directory")
     analyze_parser.add_argument("--aggregate-every", type=int, default=10, help="Summary aggregation window")
+
+    replay_parser = subparsers.add_parser("replay", help="Replay one run live with animated weight updates")
+    replay_parser.add_argument("--run-dir", required=True, help="Path to a previous run directory")
+    replay_parser.add_argument("--interval-ms", type=int, default=1200, help="Animation interval in milliseconds")
+    replay_parser.add_argument(
+        "--family-view",
+        action="store_true",
+        help="Aggregate duplicate agents into base personality families",
+    )
 
     sample_parser = subparsers.add_parser("generate-sample-tasks", help="Generate deterministic sample tasks")
     sample_parser.add_argument("--config", required=True, help="Path to the YAML config file")
@@ -79,6 +89,10 @@ def main() -> None:
             output_path.write_text(json.dumps(tasks, indent=2, sort_keys=True), encoding="utf-8")
         else:
             print(json.dumps(tasks, indent=2, sort_keys=True))
+        return
+
+    if args.command == "replay":
+        launch_weight_replay(run_dir=args.run_dir, interval_ms=args.interval_ms, family_view=args.family_view)
         return
 
     raise RuntimeError(f"Unhandled command: {args.command}")

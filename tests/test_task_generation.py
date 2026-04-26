@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from llm_personality_experiment.config import ExperimentConfig
 from llm_personality_experiment.tasks.generator import TaskGenerator
 from llm_personality_experiment.tasks.models import OperationType, ScenarioType
 
@@ -37,3 +38,22 @@ def test_generated_mixed_exam_uses_supported_operations(config) -> None:
         question.operation in {OperationType.ADDITION, OperationType.SUBTRACTION, OperationType.MULTIPLICATION}
         for question in task.questions
     )
+
+
+def test_generator_can_include_reference_answers(config) -> None:
+    payload = config.model_dump(mode="python")
+    payload["task_generation"]["include_reference_answers"] = True
+    payload["task_generation"]["questions_per_exam_min"] = 1
+    payload["task_generation"]["questions_per_exam_max"] = 1
+    payload["scenario_mix"] = {
+        "addition": 1.0,
+        "subtraction": 0.0,
+        "multiplication": 0.0,
+        "mixed_review": 0.0,
+    }
+    showcase_config = ExperimentConfig.model_validate(payload)
+
+    task = TaskGenerator(showcase_config).generate(iteration=1, scenario_type=ScenarioType.ADDITION)
+
+    assert task.reference_answers is not None
+    assert set(task.reference_answers) == {"q1"}

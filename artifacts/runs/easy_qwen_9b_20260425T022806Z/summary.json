@@ -1,0 +1,1153 @@
+{
+  "agent_outcomes": {
+    "always_correct__01": {
+      "attempts": 22,
+      "failure_rate": 1.0,
+      "failure_types": {
+        "invalid_json": 22
+      },
+      "failures": 22,
+      "successes": 0
+    },
+    "always_correct__02": {
+      "attempts": 22,
+      "failure_rate": 1.0,
+      "failure_types": {
+        "invalid_json": 22
+      },
+      "failures": 22,
+      "successes": 0
+    },
+    "always_nice_teacher__01": {
+      "attempts": 22,
+      "failure_rate": 1.0,
+      "failure_types": {
+        "invalid_json": 22
+      },
+      "failures": 22,
+      "successes": 0
+    },
+    "always_nice_teacher__02": {
+      "attempts": 22,
+      "failure_rate": 1.0,
+      "failure_types": {
+        "invalid_json": 22
+      },
+      "failures": 22,
+      "successes": 0
+    },
+    "sometimes_correct__01": {
+      "attempts": 18,
+      "failure_rate": 1.0,
+      "failure_types": {
+        "invalid_json": 18
+      },
+      "failures": 18,
+      "successes": 0
+    },
+    "sometimes_correct__02": {
+      "attempts": 20,
+      "failure_rate": 1.0,
+      "failure_types": {
+        "invalid_json": 20
+      },
+      "failures": 20,
+      "successes": 0
+    }
+  },
+  "agent_selection_counts": {
+    "always_correct__01": 22,
+    "always_correct__02": 22,
+    "always_nice_teacher__01": 22,
+    "always_nice_teacher__02": 22,
+    "sometimes_correct__01": 18,
+    "sometimes_correct__02": 20
+  },
+  "aggregate_windows": [
+    {
+      "completeness": 0.0,
+      "correctness": 0.0,
+      "end_iteration": 6,
+      "failure_rate": 1.0,
+      "reliability": 0.0,
+      "supportiveness": 0.0
+    },
+    {
+      "completeness": 0.0,
+      "correctness": 0.0,
+      "end_iteration": 12,
+      "failure_rate": 1.0,
+      "reliability": 0.0,
+      "supportiveness": 0.0
+    },
+    {
+      "completeness": 0.0,
+      "correctness": 0.0,
+      "end_iteration": 18,
+      "failure_rate": 1.0,
+      "reliability": 0.0,
+      "supportiveness": 0.0
+    },
+    {
+      "completeness": 0.0,
+      "correctness": 0.0,
+      "end_iteration": 24,
+      "failure_rate": 1.0,
+      "reliability": 0.0,
+      "supportiveness": 0.0
+    },
+    {
+      "completeness": 0.0,
+      "correctness": 0.0,
+      "end_iteration": 30,
+      "failure_rate": 1.0,
+      "reliability": 0.0,
+      "supportiveness": 0.0
+    },
+    {
+      "completeness": 0.0,
+      "correctness": 0.0,
+      "end_iteration": 36,
+      "failure_rate": 1.0,
+      "reliability": 0.0,
+      "supportiveness": 0.0
+    },
+    {
+      "completeness": 0.0,
+      "correctness": 0.0,
+      "end_iteration": 42,
+      "failure_rate": 1.0,
+      "reliability": 0.0,
+      "supportiveness": 0.0
+    }
+  ],
+  "average_agent_metrics": {
+    "always_correct__01": {
+      "completeness": 0.16852168464697456,
+      "correctness": 0.1159326075814407,
+      "reliability": 0.16852168464697456,
+      "supportiveness": 0.14151409458026076
+    },
+    "always_correct__02": {
+      "completeness": 0.16852168464697456,
+      "correctness": 0.1159326075814407,
+      "reliability": 0.16852168464697456,
+      "supportiveness": 0.14151409458026076
+    },
+    "always_nice_teacher__01": {
+      "completeness": 0.16852168464697456,
+      "correctness": 0.1159326075814407,
+      "reliability": 0.16852168464697456,
+      "supportiveness": 0.14151409458026076
+    },
+    "always_nice_teacher__02": {
+      "completeness": 0.16852168464697456,
+      "correctness": 0.1159326075814407,
+      "reliability": 0.16852168464697456,
+      "supportiveness": 0.14151409458026076
+    },
+    "sometimes_correct__01": {
+      "completeness": 0.20256089767379867,
+      "correctness": 0.13948617720339754,
+      "reliability": 0.20256089767379867,
+      "supportiveness": 0.17020551944602724
+    },
+    "sometimes_correct__02": {
+      "completeness": 0.184139922236276,
+      "correctness": 0.12672645499640806,
+      "reliability": 0.184139922236276,
+      "supportiveness": 0.15466818714795785
+    }
+  },
+  "failure_counts": {
+    "invalid_json": 126
+  },
+  "format_failure_count": 126,
+  "run_metadata": {
+    "backend": {
+      "base_url": "http://127.0.0.1:11434",
+      "k_sample": 40,
+      "model_name": "qwen3.5:27b",
+      "p_sample": 0.9,
+      "provider": "ollama",
+      "temperature": 0.0,
+      "timeout_seconds": 300.0
+    },
+    "config": {
+      "analysis": {
+        "aggregate_every": 6,
+        "generate_after_run": true
+      },
+      "backend": {
+        "base_url": "http://127.0.0.1:11434",
+        "k_sample": 40,
+        "model_name": "qwen3.5:27b",
+        "p_sample": 0.9,
+        "provider": "ollama",
+        "temperature": 0.0,
+        "timeout_seconds": 300.0
+      },
+      "evaluation": {
+        "feedback": {
+          "banned_keywords": [
+            "bad",
+            "stupid",
+            "lazy",
+            "terrible",
+            "fail"
+          ],
+          "coaching_keywords": [
+            "keep practicing",
+            "try again",
+            "check",
+            "next time",
+            "keep going"
+          ],
+          "min_words": 6,
+          "positive_keywords": [
+            "great",
+            "good job",
+            "well done",
+            "proud",
+            "excellent",
+            "nice work"
+          ]
+        }
+      },
+      "experiment_name": "easy_qwen_9b",
+      "iterations": 100,
+      "metrics": {
+        "baseline": {
+          "completeness": 0.5,
+          "correctness": 0.5,
+          "reliability": 0.5,
+          "supportiveness": 0.5
+        },
+        "initial": {
+          "completeness": 0.6,
+          "correctness": 0.5,
+          "reliability": 0.6,
+          "supportiveness": 0.55
+        },
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "paths": {
+        "analysis_dirname": "analysis",
+        "config_snapshot_filename": "config_snapshot.yaml",
+        "logs_filename": "experiment.jsonl",
+        "metadata_filename": "run_metadata.json",
+        "output_root": "artifacts",
+        "runs_dirname": "runs",
+        "summary_filename": "summary.json",
+        "tasks_filename": "tasks.jsonl"
+      },
+      "personalities": {
+        "duplication": {
+          "always_correct": 2,
+          "always_nice_teacher": 2,
+          "sometimes_correct": 2
+        },
+        "sampling_parameters_path": "configs/personality_sampling.json"
+      },
+      "personalities_dir": "personalities",
+      "scenario_mix": {
+        "addition": 0.5,
+        "mixed_review": 0.1,
+        "multiplication": 0.15,
+        "subtraction": 0.25
+      },
+      "seed": 20260405,
+      "selection": {
+        "agents_per_task": 3,
+        "epsilon": 0.1,
+        "metric_weights": {
+          "completeness": 0.2,
+          "correctness": 0.45,
+          "reliability": 0.2,
+          "supportiveness": 0.15
+        }
+      },
+      "task_generation": {
+        "grade_label": "elementary school",
+        "mixed_operation_pool": [
+          "addition",
+          "subtraction",
+          "multiplication"
+        ],
+        "operations": {
+          "addition": {
+            "max_operand": 10,
+            "min_operand": 0,
+            "non_negative_only": true
+          },
+          "multiplication": {
+            "max_operand": 6,
+            "min_operand": 0,
+            "non_negative_only": true
+          },
+          "subtraction": {
+            "max_operand": 10,
+            "min_operand": 0,
+            "non_negative_only": true
+          }
+        },
+        "points_per_question": 1,
+        "questions_per_exam_max": 6,
+        "questions_per_exam_min": 4
+      },
+      "updates": {
+        "above_baseline": {
+          "decrease_rate": 0.07,
+          "increase_rate": 0.04
+        },
+        "below_baseline": {
+          "decrease_rate": 0.18,
+          "increase_rate": 0.1
+        }
+      }
+    },
+    "created_at_utc": "easy_qwen_9b_20260425T022806Z",
+    "evaluation": {
+      "feedback": {
+        "banned_keywords": [
+          "bad",
+          "stupid",
+          "lazy",
+          "terrible",
+          "fail"
+        ],
+        "coaching_keywords": [
+          "keep practicing",
+          "try again",
+          "check",
+          "next time",
+          "keep going"
+        ],
+        "min_words": 6,
+        "positive_keywords": [
+          "great",
+          "good job",
+          "well done",
+          "proud",
+          "excellent",
+          "nice work"
+        ]
+      }
+    },
+    "experiment_name": "easy_qwen_9b",
+    "metrics": {
+      "baseline": {
+        "completeness": 0.5,
+        "correctness": 0.5,
+        "reliability": 0.5,
+        "supportiveness": 0.5
+      },
+      "initial": {
+        "completeness": 0.6,
+        "correctness": 0.5,
+        "reliability": 0.6,
+        "supportiveness": 0.55
+      },
+      "max_value": 1.0,
+      "min_value": 0.0
+    },
+    "personalities": {
+      "dir": "personalities",
+      "duplication": {
+        "always_correct": 2,
+        "always_nice_teacher": 2,
+        "sometimes_correct": 2
+      },
+      "loaded_agent_names": [
+        "always_correct__01",
+        "always_correct__02",
+        "always_nice_teacher__01",
+        "always_nice_teacher__02",
+        "sometimes_correct__01",
+        "sometimes_correct__02"
+      ],
+      "loaded_personalities": [
+        "always_correct",
+        "always_nice_teacher",
+        "sometimes_correct"
+      ],
+      "sampling_parameters_path": "configs/personality_sampling.json",
+      "sampling_profiles": {
+        "always_correct": {
+          "k_sample": 8,
+          "p_sample": 0.2,
+          "temperature": 0.05
+        },
+        "always_nice_teacher": {
+          "k_sample": 20,
+          "p_sample": 0.45,
+          "temperature": 0.18
+        },
+        "sometimes_correct": {
+          "k_sample": 80,
+          "p_sample": 0.92,
+          "temperature": 0.55
+        }
+      },
+      "total_agents": 6
+    },
+    "run_id": "easy_qwen_9b_20260425T022806Z",
+    "scenario_mix": {
+      "addition": 0.5,
+      "mixed_review": 0.1,
+      "multiplication": 0.15,
+      "subtraction": 0.25
+    },
+    "selection": {
+      "agents_per_task": 3,
+      "epsilon": 0.1,
+      "metric_weights": {
+        "completeness": 0.2,
+        "correctness": 0.45,
+        "reliability": 0.2,
+        "supportiveness": 0.15
+      }
+    },
+    "task_generation": {
+      "grade_label": "elementary school",
+      "mixed_operation_pool": [
+        "addition",
+        "subtraction",
+        "multiplication"
+      ],
+      "operations": {
+        "addition": {
+          "max_operand": 10,
+          "min_operand": 0,
+          "non_negative_only": true
+        },
+        "multiplication": {
+          "max_operand": 6,
+          "min_operand": 0,
+          "non_negative_only": true
+        },
+        "subtraction": {
+          "max_operand": 10,
+          "min_operand": 0,
+          "non_negative_only": true
+        }
+      },
+      "points_per_question": 1,
+      "questions_per_exam_max": 6,
+      "questions_per_exam_min": 4
+    },
+    "updates": {
+      "above_baseline": {
+        "decrease_rate": 0.07,
+        "increase_rate": 0.04
+      },
+      "below_baseline": {
+        "decrease_rate": 0.18,
+        "increase_rate": 0.1
+      }
+    }
+  },
+  "scenario_scores": {
+    "addition": {
+      "completeness": 0.0,
+      "correctness": 0.0,
+      "reliability": 0.0,
+      "supportiveness": 0.0
+    },
+    "mixed_review": {
+      "completeness": 0.0,
+      "correctness": 0.0,
+      "reliability": 0.0,
+      "supportiveness": 0.0
+    },
+    "multiplication": {
+      "completeness": 0.0,
+      "correctness": 0.0,
+      "reliability": 0.0,
+      "supportiveness": 0.0
+    },
+    "subtraction": {
+      "completeness": 0.0,
+      "correctness": 0.0,
+      "reliability": 0.0,
+      "supportiveness": 0.0
+    }
+  },
+  "task_failure_overview": [
+    {
+      "failing_agents": [
+        "sometimes_correct__02",
+        "always_correct__02",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 1,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "sometimes_correct__02",
+        "always_correct__02",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "always_correct__01",
+        "always_nice_teacher__01"
+      ],
+      "iteration": 2,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "always_correct__01",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02",
+        "always_correct__02",
+        "sometimes_correct__02"
+      ],
+      "iteration": 3,
+      "question_count": 5,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "always_correct__02",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02",
+        "sometimes_correct__01",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 4,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "sometimes_correct__02",
+        "sometimes_correct__01",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "sometimes_correct__02",
+        "always_nice_teacher__01"
+      ],
+      "iteration": 5,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__02",
+        "sometimes_correct__02",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02",
+        "always_correct__02",
+        "sometimes_correct__01"
+      ],
+      "iteration": 6,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "always_correct__02",
+        "sometimes_correct__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "always_correct__01",
+        "sometimes_correct__02"
+      ],
+      "iteration": 7,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "always_correct__01",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "always_correct__01",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 8,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "always_correct__01",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__01",
+        "sometimes_correct__01",
+        "sometimes_correct__02"
+      ],
+      "iteration": 9,
+      "question_count": 5,
+      "scenario_type": "mixed_review",
+      "selected_agents": [
+        "always_correct__01",
+        "sometimes_correct__01",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "always_nice_teacher__01",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 10,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_correct__02",
+        "always_nice_teacher__01",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02",
+        "always_nice_teacher__01",
+        "always_correct__01"
+      ],
+      "iteration": 11,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "sometimes_correct__02",
+        "always_nice_teacher__01",
+        "always_correct__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__01",
+        "sometimes_correct__02"
+      ],
+      "iteration": 12,
+      "question_count": 4,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__01",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02",
+        "always_correct__01",
+        "always_nice_teacher__01"
+      ],
+      "iteration": 13,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "always_correct__01",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__01",
+        "sometimes_correct__01",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 14,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__01",
+        "sometimes_correct__01",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "always_correct__01",
+        "sometimes_correct__02"
+      ],
+      "iteration": 15,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__02",
+        "always_correct__01",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "always_correct__01",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 16,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__02",
+        "always_correct__01",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "always_nice_teacher__02",
+        "sometimes_correct__02"
+      ],
+      "iteration": 17,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "always_nice_teacher__02",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02",
+        "sometimes_correct__01",
+        "always_correct__01"
+      ],
+      "iteration": 18,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "sometimes_correct__02",
+        "sometimes_correct__01",
+        "always_correct__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "sometimes_correct__01",
+        "always_correct__01"
+      ],
+      "iteration": 19,
+      "question_count": 4,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "sometimes_correct__01",
+        "always_correct__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "always_correct__01",
+        "sometimes_correct__01"
+      ],
+      "iteration": 20,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_correct__02",
+        "always_correct__01",
+        "sometimes_correct__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__02",
+        "always_nice_teacher__01"
+      ],
+      "iteration": 21,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__02",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02",
+        "always_correct__02",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 22,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "sometimes_correct__02",
+        "always_correct__02",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "sometimes_correct__01",
+        "always_correct__02"
+      ],
+      "iteration": 23,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "sometimes_correct__01",
+        "always_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "always_correct__01",
+        "always_correct__02"
+      ],
+      "iteration": 24,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "always_correct__01",
+        "always_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "always_nice_teacher__02",
+        "sometimes_correct__02"
+      ],
+      "iteration": 25,
+      "question_count": 5,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "always_nice_teacher__02",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__01",
+        "always_nice_teacher__01",
+        "sometimes_correct__02"
+      ],
+      "iteration": 26,
+      "question_count": 5,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "always_correct__01",
+        "always_nice_teacher__01",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "always_nice_teacher__01",
+        "sometimes_correct__02"
+      ],
+      "iteration": 27,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_correct__02",
+        "always_nice_teacher__01",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "always_correct__01",
+        "always_correct__02"
+      ],
+      "iteration": 28,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "always_correct__01",
+        "always_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02",
+        "always_nice_teacher__01",
+        "always_correct__02"
+      ],
+      "iteration": 29,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "sometimes_correct__02",
+        "always_nice_teacher__01",
+        "always_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02",
+        "always_correct__01",
+        "always_correct__02"
+      ],
+      "iteration": 30,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "always_correct__01",
+        "always_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "always_nice_teacher__02",
+        "sometimes_correct__01"
+      ],
+      "iteration": 31,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_correct__02",
+        "always_nice_teacher__02",
+        "sometimes_correct__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__01",
+        "always_nice_teacher__02",
+        "sometimes_correct__02"
+      ],
+      "iteration": 32,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__01",
+        "always_nice_teacher__02",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__01",
+        "always_correct__02",
+        "always_correct__01"
+      ],
+      "iteration": 33,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__01",
+        "always_correct__02",
+        "always_correct__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__01",
+        "always_correct__02"
+      ],
+      "iteration": 34,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__01",
+        "always_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__02",
+        "always_correct__02",
+        "always_nice_teacher__01"
+      ],
+      "iteration": 35,
+      "question_count": 6,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "sometimes_correct__02",
+        "always_correct__02",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02",
+        "always_nice_teacher__01",
+        "sometimes_correct__02"
+      ],
+      "iteration": 36,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "always_nice_teacher__01",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_nice_teacher__02",
+        "sometimes_correct__01",
+        "always_correct__01"
+      ],
+      "iteration": 37,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_nice_teacher__02",
+        "sometimes_correct__01",
+        "always_correct__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__01",
+        "always_correct__02",
+        "always_nice_teacher__01"
+      ],
+      "iteration": 38,
+      "question_count": 5,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__01",
+        "always_correct__02",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__01",
+        "always_nice_teacher__02",
+        "sometimes_correct__02"
+      ],
+      "iteration": 39,
+      "question_count": 6,
+      "scenario_type": "addition",
+      "selected_agents": [
+        "always_correct__01",
+        "always_nice_teacher__02",
+        "sometimes_correct__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__01",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 40,
+      "question_count": 4,
+      "scenario_type": "multiplication",
+      "selected_agents": [
+        "sometimes_correct__01",
+        "always_nice_teacher__01",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__02",
+        "always_nice_teacher__02",
+        "always_nice_teacher__01"
+      ],
+      "iteration": 41,
+      "question_count": 5,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_correct__02",
+        "always_nice_teacher__02",
+        "always_nice_teacher__01"
+      ],
+      "successful_agents": []
+    },
+    {
+      "failing_agents": [
+        "always_correct__01",
+        "always_correct__02",
+        "always_nice_teacher__02"
+      ],
+      "iteration": 42,
+      "question_count": 6,
+      "scenario_type": "subtraction",
+      "selected_agents": [
+        "always_correct__01",
+        "always_correct__02",
+        "always_nice_teacher__02"
+      ],
+      "successful_agents": []
+    }
+  ],
+  "total_attempts": 126,
+  "total_tasks": 42
+}

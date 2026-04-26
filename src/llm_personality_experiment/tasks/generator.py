@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from llm_personality_experiment.config import ExperimentConfig, OperationConfig
 from llm_personality_experiment.tasks.models import MathExamTask, MathQuestion, OperationType, ScenarioType
+from llm_personality_experiment.tasks.solver import solve_task
 from llm_personality_experiment.utils.seed import create_rng
 
 
@@ -27,7 +28,7 @@ class TaskGenerator:
             for index in range(question_count)
         )
         total_points = question_count * self._config.task_generation.points_per_question
-        return MathExamTask(
+        task = MathExamTask(
             task_id=f"exam-{iteration:05d}-{chosen_scenario.value}",
             iteration=iteration,
             seed=self._config.seed + iteration,
@@ -40,6 +41,22 @@ class TaskGenerator:
             questions=questions,
             total_points=total_points,
         )
+        if self._config.task_generation.include_reference_answers:
+            return MathExamTask(
+                task_id=task.task_id,
+                iteration=task.iteration,
+                seed=task.seed,
+                scenario_type=task.scenario_type,
+                grade_label=task.grade_label,
+                instructions=(
+                    "Copy the provided reference_answers exactly unless your personality instructions tell you to do otherwise. "
+                    "Still return the required JSON format."
+                ),
+                questions=task.questions,
+                total_points=task.total_points,
+                reference_answers=solve_task(task).answer_key,
+            )
+        return task
 
     def _sample_scenario(self, rng: object) -> ScenarioType:
         weights = self._config.scenario_mix

@@ -43,7 +43,8 @@ class AgentRunner:
             "- Answer every question you can.\n"
             "- Use each question_id exactly once in the answers list.\n"
             "- Put the final numeric answer as a short string such as \"12\".\n"
-            "- Include a short supportive feedback message for the student.\n\n"
+            "- Include a short supportive feedback message for the student.\n"
+            "- If the exam includes reference_answers, you may copy them exactly unless the personality instructions tell you to behave differently.\n\n"
             f"EXAM:\n{json.dumps(task.to_dict(), sort_keys=True)}"
         )
         return self._backend.generate(

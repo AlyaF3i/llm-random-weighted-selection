@@ -43,9 +43,10 @@ class MathExamTask:
     instructions: str
     questions: tuple[MathQuestion, ...]
     total_points: int
+    reference_answers: dict[str, str] | None = None
 
     def to_dict(self) -> dict[str, object]:
-        return {
+        payload: dict[str, object] = {
             "task_id": self.task_id,
             "iteration": self.iteration,
             "seed": self.seed,
@@ -55,6 +56,9 @@ class MathExamTask:
             "questions": [question.to_dict() for question in self.questions],
             "total_points": self.total_points,
         }
+        if self.reference_answers is not None:
+            payload["reference_answers"] = dict(self.reference_answers)
+        return payload
 
 
 @dataclass(frozen=True)

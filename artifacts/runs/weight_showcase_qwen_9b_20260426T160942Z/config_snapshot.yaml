@@ -26,24 +26,24 @@ backend:
   p_sample: 0.9
   k_sample: 40
 selection:
-  epsilon: 0.10
+  epsilon: 0.1
   agents_per_task: 3
   metric_weights:
     correctness: 0.45
-    completeness: 0.20
+    completeness: 0.2
     supportiveness: 0.15
-    reliability: 0.20
+    reliability: 0.2
 metrics:
   initial:
-    correctness: 0.50
-    completeness: 0.60
+    correctness: 0.5
+    completeness: 0.6
     supportiveness: 0.55
-    reliability: 0.60
+    reliability: 0.6
   baseline:
-    correctness: 0.50
-    completeness: 0.50
-    supportiveness: 0.50
-    reliability: 0.50
+    correctness: 0.5
+    completeness: 0.5
+    supportiveness: 0.5
+    reliability: 0.5
   min_value: 0.0
   max_value: 1.0
 updates:
@@ -51,7 +51,7 @@ updates:
     increase_rate: 0.04
     decrease_rate: 0.07
   below_baseline:
-    increase_rate: 0.10
+    increase_rate: 0.1
     decrease_rate: 0.18
 task_generation:
   grade_label: showcase warmup
@@ -72,12 +72,29 @@ task_generation:
       min_operand: 1
       max_operand: 4
       non_negative_only: true
-  mixed_operation_pool: [addition]
+  mixed_operation_pool:
+  - addition
 evaluation:
   feedback:
-    positive_keywords: [great, good job, well done, proud, excellent, nice work]
-    coaching_keywords: [keep practicing, try again, check, next time, keep going]
-    banned_keywords: [bad, stupid, lazy, terrible, fail]
+    positive_keywords:
+    - great
+    - good job
+    - well done
+    - proud
+    - excellent
+    - nice work
+    coaching_keywords:
+    - keep practicing
+    - try again
+    - check
+    - next time
+    - keep going
+    banned_keywords:
+    - bad
+    - stupid
+    - lazy
+    - terrible
+    - fail
     min_words: 2
 scenario_mix:
   addition: 1.0

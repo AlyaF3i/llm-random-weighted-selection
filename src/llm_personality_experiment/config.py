@@ -98,6 +98,7 @@ class TaskGenerationConfig(BaseModel):
     questions_per_exam_min: int = Field(ge=1)
     questions_per_exam_max: int = Field(ge=1)
     points_per_question: int = Field(ge=1)
+    include_reference_answers: bool = False
     operations: dict[str, OperationConfig]
     mixed_operation_pool: list[str]
 

@@ -1,0 +1,283 @@
+{
+  "backend": {
+    "base_url": "http://127.0.0.1:11434",
+    "k_sample": 40,
+    "model_name": "qwen3.5:9b",
+    "p_sample": 0.9,
+    "provider": "ollama",
+    "temperature": 0.0,
+    "timeout_seconds": 180.0
+  },
+  "config": {
+    "analysis": {
+      "aggregate_every": 6,
+      "generate_after_run": true
+    },
+    "backend": {
+      "base_url": "http://127.0.0.1:11434",
+      "k_sample": 40,
+      "model_name": "qwen3.5:9b",
+      "p_sample": 0.9,
+      "provider": "ollama",
+      "temperature": 0.0,
+      "timeout_seconds": 180.0
+    },
+    "evaluation": {
+      "feedback": {
+        "banned_keywords": [
+          "bad",
+          "stupid",
+          "lazy",
+          "terrible",
+          "fail"
+        ],
+        "coaching_keywords": [
+          "keep practicing",
+          "try again",
+          "check",
+          "next time",
+          "keep going"
+        ],
+        "min_words": 2,
+        "positive_keywords": [
+          "great",
+          "good job",
+          "well done",
+          "proud",
+          "excellent",
+          "nice work"
+        ]
+      }
+    },
+    "experiment_name": "weight_showcase_qwen_9b",
+    "iterations": 30,
+    "metrics": {
+      "baseline": {
+        "completeness": 0.5,
+        "correctness": 0.5,
+        "reliability": 0.5,
+        "supportiveness": 0.5
+      },
+      "initial": {
+        "completeness": 0.6,
+        "correctness": 0.5,
+        "reliability": 0.6,
+        "supportiveness": 0.55
+      },
+      "max_value": 1.0,
+      "min_value": 0.0
+    },
+    "paths": {
+      "analysis_dirname": "analysis",
+      "config_snapshot_filename": "config_snapshot.yaml",
+      "logs_filename": "experiment.jsonl",
+      "metadata_filename": "run_metadata.json",
+      "output_root": "artifacts",
+      "runs_dirname": "runs",
+      "summary_filename": "summary.json",
+      "tasks_filename": "tasks.jsonl"
+    },
+    "personalities": {
+      "duplication": {
+        "always_correct": 2,
+        "always_nice_teacher": 2,
+        "sometimes_correct": 2
+      },
+      "sampling_parameters_path": "configs/personality_sampling.json"
+    },
+    "personalities_dir": "personalities",
+    "scenario_mix": {
+      "addition": 1.0,
+      "mixed_review": 0.0,
+      "multiplication": 0.0,
+      "subtraction": 0.0
+    },
+    "seed": 20260405,
+    "selection": {
+      "agents_per_task": 3,
+      "epsilon": 0.1,
+      "metric_weights": {
+        "completeness": 0.2,
+        "correctness": 0.45,
+        "reliability": 0.2,
+        "supportiveness": 0.15
+      }
+    },
+    "task_generation": {
+      "grade_label": "showcase warmup",
+      "include_reference_answers": true,
+      "mixed_operation_pool": [
+        "addition"
+      ],
+      "operations": {
+        "addition": {
+          "max_operand": 4,
+          "min_operand": 1,
+          "non_negative_only": true
+        },
+        "multiplication": {
+          "max_operand": 4,
+          "min_operand": 1,
+          "non_negative_only": true
+        },
+        "subtraction": {
+          "max_operand": 4,
+          "min_operand": 1,
+          "non_negative_only": true
+        }
+      },
+      "points_per_question": 1,
+      "questions_per_exam_max": 1,
+      "questions_per_exam_min": 1
+    },
+    "updates": {
+      "above_baseline": {
+        "decrease_rate": 0.07,
+        "increase_rate": 0.04
+      },
+      "below_baseline": {
+        "decrease_rate": 0.18,
+        "increase_rate": 0.1
+      }
+    }
+  },
+  "created_at_utc": "weight_showcase_qwen_9b_20260426T160942Z",
+  "evaluation": {
+    "feedback": {
+      "banned_keywords": [
+        "bad",
+        "stupid",
+        "lazy",
+        "terrible",
+        "fail"
+      ],
+      "coaching_keywords": [
+        "keep practicing",
+        "try again",
+        "check",
+        "next time",
+        "keep going"
+      ],
+      "min_words": 2,
+      "positive_keywords": [
+        "great",
+        "good job",
+        "well done",
+        "proud",
+        "excellent",
+        "nice work"
+      ]
+    }
+  },
+  "experiment_name": "weight_showcase_qwen_9b",
+  "metrics": {
+    "baseline": {
+      "completeness": 0.5,
+      "correctness": 0.5,
+      "reliability": 0.5,
+      "supportiveness": 0.5
+    },
+    "initial": {
+      "completeness": 0.6,
+      "correctness": 0.5,
+      "reliability": 0.6,
+      "supportiveness": 0.55
+    },
+    "max_value": 1.0,
+    "min_value": 0.0
+  },
+  "personalities": {
+    "dir": "personalities",
+    "duplication": {
+      "always_correct": 2,
+      "always_nice_teacher": 2,
+      "sometimes_correct": 2
+    },
+    "loaded_agent_names": [
+      "always_correct__01",
+      "always_correct__02",
+      "always_nice_teacher__01",
+      "always_nice_teacher__02",
+      "sometimes_correct__01",
+      "sometimes_correct__02"
+    ],
+    "loaded_personalities": [
+      "always_correct",
+      "always_nice_teacher",
+      "sometimes_correct"
+    ],
+    "sampling_parameters_path": "configs/personality_sampling.json",
+    "sampling_profiles": {
+      "always_correct": {
+        "k_sample": 8,
+        "p_sample": 0.2,
+        "temperature": 0.05
+      },
+      "always_nice_teacher": {
+        "k_sample": 20,
+        "p_sample": 0.45,
+        "temperature": 0.18
+      },
+      "sometimes_correct": {
+        "k_sample": 80,
+        "p_sample": 0.92,
+        "temperature": 0.55
+      }
+    },
+    "total_agents": 6
+  },
+  "run_id": "weight_showcase_qwen_9b_20260426T160942Z",
+  "scenario_mix": {
+    "addition": 1.0,
+    "mixed_review": 0.0,
+    "multiplication": 0.0,
+    "subtraction": 0.0
+  },
+  "selection": {
+    "agents_per_task": 3,
+    "epsilon": 0.1,
+    "metric_weights": {
+      "completeness": 0.2,
+      "correctness": 0.45,
+      "reliability": 0.2,
+      "supportiveness": 0.15
+    }
+  },
+  "task_generation": {
+    "grade_label": "showcase warmup",
+    "include_reference_answers": true,
+    "mixed_operation_pool": [
+      "addition"
+    ],
+    "operations": {
+      "addition": {
+        "max_operand": 4,
+        "min_operand": 1,
+        "non_negative_only": true
+      },
+      "multiplication": {
+        "max_operand": 4,
+        "min_operand": 1,
+        "non_negative_only": true
+      },
+      "subtraction": {
+        "max_operand": 4,
+        "min_operand": 1,
+        "non_negative_only": true
+      }
+    },
+    "points_per_question": 1,
+    "questions_per_exam_max": 1,
+    "questions_per_exam_min": 1
+  },
+  "updates": {
+    "above_baseline": {
+      "decrease_rate": 0.07,
+      "increase_rate": 0.04
+    },
+    "below_baseline": {
+      "decrease_rate": 0.18,
+      "increase_rate": 0.1
+    }
+  }
+}
