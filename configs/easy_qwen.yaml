@@ -20,7 +20,7 @@ paths:
 backend:
   provider: ollama
   base_url: http://127.0.0.1:11434
-  model_name: qwen3.5:9b
+  model_name: qwen3.5:27b
   timeout_seconds: 300.0
   temperature: 0.0
   p_sample: 0.9
