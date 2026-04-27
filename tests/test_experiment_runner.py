@@ -40,6 +40,8 @@ def test_experiment_runner_writes_artifacts(config, monkeypatch, tmp_path) -> No
     assert Path(run_paths.summary_path).exists()
     assert (Path(run_paths.analysis_dir) / "metrics_over_time.png").exists()
     assert (Path(run_paths.analysis_dir) / "selection_counts.png").exists()
+    assert (Path(run_paths.analysis_dir) / "family_weights_over_time.png").exists()
+    assert (Path(run_paths.analysis_dir) / "outcome_breakdown_by_family.png").exists()
     assert (Path(run_paths.analysis_dir) / "agent_failure_counts.png").exists()
     assert (Path(run_paths.analysis_dir) / "failure_type_heatmap.png").exists()
 

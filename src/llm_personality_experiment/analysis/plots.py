@@ -33,9 +33,12 @@ def generate_plots(log_path: str | Path, output_dir: str | Path) -> list[Path]:
     generated_files = [
         _plot_metrics(records, baselines, target_dir / "metrics_over_time.png"),
         _plot_weights(records, target_dir / "weights_over_time.png"),
+        _plot_family_weights(records, target_dir / "family_weights_over_time.png"),
+        _plot_family_correctness(records, baselines, target_dir / "family_correctness_over_time.png"),
         _plot_failure_rates(records, attempts, target_dir / "failure_rates.png"),
         _plot_scenario_scores(attempts, target_dir / "scenario_scores.png"),
         _plot_selection_counts(records, target_dir / "selection_counts.png"),
+        _plot_family_selection_counts(records, target_dir / "family_selection_counts.png"),
         _plot_exam_scores(records, target_dir / "exam_scores_over_time.png"),
         _plot_json_validity(attempts, target_dir / "json_validity_over_time.png"),
         _plot_agent_failure_counts(attempts, target_dir / "agent_failure_counts.png"),
@@ -43,6 +46,9 @@ def generate_plots(log_path: str | Path, output_dir: str | Path) -> list[Path]:
         _plot_question_volume(records, target_dir / "question_volume_over_time.png"),
         _plot_failure_type_heatmap(attempts, target_dir / "failure_type_heatmap.png"),
         _plot_final_metric_snapshot(records, baselines, target_dir / "final_metric_snapshot.png"),
+        _plot_outcome_breakdown_by_family(attempts, target_dir / "outcome_breakdown_by_family.png"),
+        _plot_task_outcome_mix(records, target_dir / "task_outcome_mix_over_time.png"),
+        _plot_family_scorecard(records, attempts, target_dir / "family_scorecard.png"),
     ]
     return generated_files
 
@@ -94,6 +100,71 @@ def _plot_weights(records: list[dict[str, Any]], output_path: Path) -> Path:
     axis.set_title("Weights Over Time")
     axis.set_xlabel("Iteration")
     axis.set_ylabel("Weight")
+    axis.grid(alpha=0.3)
+    axis.legend()
+    figure.tight_layout()
+    figure.savefig(output_path)
+    plt.close(figure)
+    return output_path
+
+
+def _plot_family_weights(records: list[dict[str, Any]], output_path: Path) -> Path:
+    family_weights: dict[str, list[float]] = defaultdict(list)
+    iterations = [int(record["iteration"]) for record in records]
+    for record in records:
+        grouped: dict[str, list[float]] = defaultdict(list)
+        for agent_name, weight in record["weights_after"].items():
+            grouped[_family_name(str(agent_name))].append(float(weight))
+        for family_name, values in grouped.items():
+            family_weights[family_name].append(_mean(values))
+
+    overall_average = _mean(
+        weight
+        for values in family_weights.values()
+        for weight in values
+    )
+    figure, axis = plt.subplots(figsize=(10, 5))
+    axis.axhspan(0.0, overall_average, color=BAD_COLOR, alpha=0.08)
+    axis.axhspan(overall_average, 1.0, color=GOOD_COLOR, alpha=0.08)
+    axis.axhline(overall_average, color=REFERENCE_COLOR, linestyle="--", linewidth=1, label="Run Average")
+    for family_name, values in family_weights.items():
+        axis.plot(iterations, values, label=family_name, linewidth=2.2)
+    axis.set_title("Family Average Weights Over Time")
+    axis.set_xlabel("Iteration")
+    axis.set_ylabel("Average Weight")
+    axis.grid(alpha=0.3)
+    axis.legend()
+    figure.tight_layout()
+    figure.savefig(output_path)
+    plt.close(figure)
+    return output_path
+
+
+def _plot_family_correctness(
+    records: list[dict[str, Any]],
+    baselines: dict[str, float],
+    output_path: Path,
+) -> Path:
+    family_correctness: dict[str, list[float]] = defaultdict(list)
+    iterations = [int(record["iteration"]) for record in records]
+    for record in records:
+        grouped: dict[str, list[float]] = defaultdict(list)
+        for agent_name, metrics_after in record["all_agents_metrics_after"].items():
+            grouped[_family_name(str(agent_name))].append(float(metrics_after["correctness"]))
+        for family_name, values in grouped.items():
+            family_correctness[family_name].append(_mean(values))
+
+    baseline = baselines.get("correctness", 0.5)
+    figure, axis = plt.subplots(figsize=(10, 5))
+    axis.axhspan(0.0, baseline, color=BAD_COLOR, alpha=0.08)
+    axis.axhspan(baseline, 1.0, color=GOOD_COLOR, alpha=0.08)
+    axis.axhline(baseline, color=REFERENCE_COLOR, linestyle="--", linewidth=1, label="Baseline")
+    for family_name, values in family_correctness.items():
+        axis.plot(iterations, values, label=family_name, linewidth=2.2)
+    axis.set_title("Family Correctness Metric Over Time")
+    axis.set_xlabel("Iteration")
+    axis.set_ylabel("Correctness Metric")
+    axis.set_ylim(0.0, 1.0)
     axis.grid(alpha=0.3)
     axis.legend()
     figure.tight_layout()
@@ -210,6 +281,27 @@ def _plot_selection_counts(records: list[dict[str, Any]], output_path: Path) -> 
     axis.set_ylabel("Selections")
     axis.tick_params(axis="x", rotation=30)
     axis.grid(axis="y", alpha=0.3)
+    figure.tight_layout()
+    figure.savefig(output_path)
+    plt.close(figure)
+    return output_path
+
+
+def _plot_family_selection_counts(records: list[dict[str, Any]], output_path: Path) -> Path:
+    selection_counts = Counter(
+        _family_name(str(agent_name))
+        for record in records
+        for agent_name in record["selection"]["selected_agents"]
+    )
+    average_count = _mean(selection_counts.values())
+    colors = [GOOD_COLOR if value >= average_count else BAD_COLOR for value in selection_counts.values()]
+    figure, axis = plt.subplots(figsize=(9, 5))
+    axis.bar(selection_counts.keys(), selection_counts.values(), color=colors)
+    axis.axhline(average_count, color=REFERENCE_COLOR, linestyle="--", linewidth=1, label="Average")
+    axis.set_title("Family Selection Counts")
+    axis.set_ylabel("Selections")
+    axis.grid(axis="y", alpha=0.3)
+    axis.legend()
     figure.tight_layout()
     figure.savefig(output_path)
     plt.close(figure)
@@ -431,8 +523,176 @@ def _plot_final_metric_snapshot(
     return output_path
 
 
+def _plot_outcome_breakdown_by_family(attempts: list[dict[str, Any]], output_path: Path) -> Path:
+    families = sorted({_family_name(str(flattened_attempt["attempt"]["agent_name"])) for flattened_attempt in attempts})
+    full_credit_rates: list[float] = []
+    wrong_answer_rates: list[float] = []
+    format_failure_rates: list[float] = []
+
+    for family_name in families:
+        family_attempts = [
+            flattened_attempt["attempt"]
+            for flattened_attempt in attempts
+            if _family_name(str(flattened_attempt["attempt"]["agent_name"])) == family_name
+        ]
+        total = len(family_attempts)
+        if total == 0:
+            full_credit_rates.append(0.0)
+            wrong_answer_rates.append(0.0)
+            format_failure_rates.append(0.0)
+            continue
+        full_credit_rates.append(
+            sum(1 for attempt in family_attempts if _is_full_credit_attempt(attempt)) / total
+        )
+        wrong_answer_rates.append(
+            sum(1 for attempt in family_attempts if _is_wrong_answer_attempt(attempt)) / total
+        )
+        format_failure_rates.append(
+            sum(1 for attempt in family_attempts if _is_format_failure_attempt(attempt)) / total
+        )
+
+    figure, axis = plt.subplots(figsize=(10, 5))
+    axis.bar(families, full_credit_rates, color=GOOD_COLOR, label="Full Credit")
+    axis.bar(families, wrong_answer_rates, bottom=full_credit_rates, color="#F39C12", label="Wrong Answer")
+    stacked_bottom = [full_credit_rates[index] + wrong_answer_rates[index] for index in range(len(families))]
+    axis.bar(families, format_failure_rates, bottom=stacked_bottom, color=BAD_COLOR, label="Format Failure")
+    axis.set_title("Outcome Breakdown By Family")
+    axis.set_ylabel("Share of Attempts")
+    axis.set_ylim(0.0, 1.0)
+    axis.grid(axis="y", alpha=0.3)
+    axis.legend()
+    figure.tight_layout()
+    figure.savefig(output_path)
+    plt.close(figure)
+    return output_path
+
+
+def _plot_task_outcome_mix(records: list[dict[str, Any]], output_path: Path) -> Path:
+    iterations = [int(record["iteration"]) for record in records]
+    full_credit_share: list[float] = []
+    wrong_answer_share: list[float] = []
+    format_failure_share: list[float] = []
+
+    for record in records:
+        attempts = record["agent_attempts"]
+        total = max(len(attempts), 1)
+        full_credit_share.append(sum(1 for attempt in attempts if _is_full_credit_attempt(attempt)) / total)
+        wrong_answer_share.append(sum(1 for attempt in attempts if _is_wrong_answer_attempt(attempt)) / total)
+        format_failure_share.append(sum(1 for attempt in attempts if _is_format_failure_attempt(attempt)) / total)
+
+    figure, axis = plt.subplots(figsize=(11, 5))
+    axis.bar(iterations, full_credit_share, color=GOOD_COLOR, label="Full Credit")
+    axis.bar(iterations, wrong_answer_share, bottom=full_credit_share, color="#F39C12", label="Wrong Answer")
+    stacked_bottom = [full_credit_share[index] + wrong_answer_share[index] for index in range(len(iterations))]
+    axis.bar(iterations, format_failure_share, bottom=stacked_bottom, color=BAD_COLOR, label="Format Failure")
+    axis.set_title("Selected-Agent Outcome Mix Per Task")
+    axis.set_xlabel("Iteration")
+    axis.set_ylabel("Share of Selected Agents")
+    axis.set_ylim(0.0, 1.0)
+    axis.grid(axis="y", alpha=0.3)
+    axis.legend()
+    figure.tight_layout()
+    figure.savefig(output_path)
+    plt.close(figure)
+    return output_path
+
+
+def _plot_family_scorecard(
+    records: list[dict[str, Any]],
+    attempts: list[dict[str, Any]],
+    output_path: Path,
+) -> Path:
+    families = sorted({_family_name(str(flattened_attempt["attempt"]["agent_name"])) for flattened_attempt in attempts})
+    last_record = records[-1] if records else {}
+    final_weights = last_record.get("weights_after", {})
+
+    full_credit_rates: list[float] = []
+    average_final_weights: list[float] = []
+    average_selection_share: list[float] = []
+    family_selection_counts = Counter(
+        _family_name(str(agent_name))
+        for record in records
+        for agent_name in record["selection"]["selected_agents"]
+    )
+    max_selection_count = max(family_selection_counts.values(), default=1)
+
+    for family_name in families:
+        family_attempts = [
+            flattened_attempt["attempt"]
+            for flattened_attempt in attempts
+            if _family_name(str(flattened_attempt["attempt"]["agent_name"])) == family_name
+        ]
+        total_attempts = len(family_attempts) or 1
+        full_credit_rates.append(
+            sum(1 for attempt in family_attempts if _is_full_credit_attempt(attempt)) / total_attempts
+        )
+        family_weights = [
+            float(weight)
+            for agent_name, weight in final_weights.items()
+            if _family_name(str(agent_name)) == family_name
+        ]
+        average_final_weights.append(_mean(family_weights))
+        average_selection_share.append(family_selection_counts[family_name] / max_selection_count)
+
+    x_positions = list(range(len(families)))
+    figure, axis = plt.subplots(figsize=(10, 5))
+    axis.bar(
+        [position - 0.2 for position in x_positions],
+        full_credit_rates,
+        width=0.4,
+        color=GOOD_COLOR,
+        label="Full-Credit Rate",
+    )
+    axis.bar(
+        [position + 0.2 for position in x_positions],
+        average_final_weights,
+        width=0.4,
+        color=NEUTRAL_COLOR,
+        label="Average Final Weight",
+    )
+    axis.plot(
+        x_positions,
+        average_selection_share,
+        color=REFERENCE_COLOR,
+        marker="o",
+        linewidth=2,
+        label="Selection Share (normalized)",
+    )
+    axis.set_xticks(x_positions)
+    axis.set_xticklabels(families)
+    axis.set_ylim(0.0, 1.0)
+    axis.set_ylabel("Normalized Value")
+    axis.set_title("Family Performance, Weight, And Selection")
+    axis.grid(axis="y", alpha=0.3)
+    axis.legend()
+    figure.tight_layout()
+    figure.savefig(output_path)
+    plt.close(figure)
+    return output_path
+
+
 def _mean(values: Any) -> float:
     values_list = list(values)
     if not values_list:
         return 0.0
     return float(sum(values_list) / len(values_list))
+
+
+def _family_name(agent_name: str) -> str:
+    return agent_name.split("__", maxsplit=1)[0]
+
+
+def _is_format_failure_attempt(attempt: dict[str, Any]) -> bool:
+    return bool(attempt["had_failure"])
+
+
+def _is_full_credit_attempt(attempt: dict[str, Any]) -> bool:
+    if _is_format_failure_attempt(attempt):
+        return False
+    return float(attempt["verification"]["correctness_score"]) >= 0.999999
+
+
+def _is_wrong_answer_attempt(attempt: dict[str, Any]) -> bool:
+    if _is_format_failure_attempt(attempt):
+        return False
+    return not _is_full_credit_attempt(attempt)
