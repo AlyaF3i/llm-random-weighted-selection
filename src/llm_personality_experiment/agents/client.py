@@ -29,6 +29,7 @@ class AgentRunner:
     def run(self, personality: PersonalityDefinition, task: MathExamTask) -> str:
         """Execute one task with one personality."""
 
+        # START: USER PROMPT CONSTRUCTION
         user_prompt = (
             "You are taking the role described below. Follow it closely.\n\n"
             f"PERSONALITY INSTRUCTIONS:\n{personality.prompt_text}\n\n"
@@ -47,8 +48,13 @@ class AgentRunner:
             "- If the exam includes reference_answers, you may copy them exactly unless the personality instructions tell you to behave differently.\n\n"
             f"EXAM:\n{json.dumps(task.to_dict(), sort_keys=True)}"
         )
-        return self._backend.generate(
+        # END: USER PROMPT CONSTRUCTION
+
+        # START: BACKEND GENERATION CALL
+        response = self._backend.generate(
             system_prompt="",
             user_prompt=user_prompt,
             sampling_parameters=personality.sampling_parameters,
         )
+        # END: BACKEND GENERATION CALL
+        return response

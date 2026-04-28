@@ -17,10 +17,13 @@ def summarize_run(
 ) -> dict[str, Any]:
     """Build a compact summary from task-level iteration logs."""
 
+    # START: RUN SUMMARY DATA LOADING
     records = read_jsonl(log_path)
     attempts = flatten_attempts(records)
     effective_run_metadata = run_metadata or get_run_metadata(records)
+    # END: RUN SUMMARY DATA LOADING
 
+    # START: SUMMARY AGGREGATION ACROSS ALL ATTEMPTS
     failure_counter: Counter[str] = Counter()
     scenario_totals: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
     agent_counts: Counter[str] = Counter()
@@ -56,7 +59,9 @@ def summarize_run(
 
         for metric_name, value in attempt["metrics_after"].items():
             agent_metric_sums[agent_name][metric_name] += float(value)
+    # END: SUMMARY AGGREGATION ACROSS ALL ATTEMPTS
 
+    # START: WINDOWED AGGREGATION FOR TREND REPORTING
     for end_index in range(aggregate_every, len(records) + aggregate_every, aggregate_every):
         window_records = records[max(0, end_index - aggregate_every):min(end_index, len(records))]
         if not window_records:
@@ -84,7 +89,9 @@ def summarize_run(
                 ),
             }
         )
+    # END: WINDOWED AGGREGATION FOR TREND REPORTING
 
+    # START: SUMMARY OBJECT CONSTRUCTION
     scenario_scores = {
         scenario: {
             "correctness": counts["correctness"] / counts["count"] if counts["count"] else 0.0,
@@ -145,6 +152,7 @@ def summarize_run(
     }
     if effective_run_metadata is not None:
         summary["run_metadata"] = effective_run_metadata
+    # END: SUMMARY OBJECT CONSTRUCTION
     return summary
 
 

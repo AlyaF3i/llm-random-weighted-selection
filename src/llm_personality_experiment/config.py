@@ -164,18 +164,23 @@ class ExperimentConfig(BaseModel):
 def load_config(path: str | Path) -> ExperimentConfig:
     """Load and validate the YAML configuration file."""
 
+    # START: YAML CONFIG LOADING AND VALIDATION
     config_path = Path(path)
     with config_path.open("r", encoding="utf-8") as handle:
         raw_config = yaml.safe_load(handle)
     if not isinstance(raw_config, dict):
         raise ValueError("Configuration file must contain a YAML mapping at the top level")
-    return ExperimentConfig.model_validate(raw_config)
+    validated_config = ExperimentConfig.model_validate(raw_config)
+    # END: YAML CONFIG LOADING AND VALIDATION
+    return validated_config
 
 
 def dump_config(config: ExperimentConfig, path: str | Path) -> None:
     """Persist a validated configuration snapshot."""
 
+    # START: CONFIG SNAPSHOT WRITING
     config_path = Path(path)
     config_path.parent.mkdir(parents=True, exist_ok=True)
     with config_path.open("w", encoding="utf-8") as handle:
         yaml.safe_dump(config.model_dump(mode="json"), handle, sort_keys=False)
+    # END: CONFIG SNAPSHOT WRITING

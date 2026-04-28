@@ -40,6 +40,7 @@ class ExperimentRunner:
     def run(self) -> RunPaths:
         """Execute the configured experiment and return output paths."""
 
+        # START: RUN-LEVEL ARTIFACT SETUP
         run_paths = self._create_run_paths()
         dump_config(self._config, run_paths.config_snapshot_path)
         logger = JSONLExperimentLogger(run_paths.log_path)
@@ -47,12 +48,21 @@ class ExperimentRunner:
         run_metadata = self._build_run_metadata(run_id=Path(run_paths.run_dir).name, agents=agents)
         write_json(run_paths.metadata_path, run_metadata)
         attempt_id = 0
+        # END: RUN-LEVEL ARTIFACT SETUP
 
+        # START: MAIN EXPERIMENT LOOP
         for iteration in range(1, self._config.iterations + 1):
+            # START: TASK GENERATION AND DETERMINISTIC SOLVER BASELINE
             task = self._task_generator.generate(iteration)
             solver_result = solve_task(task)
+            # END: TASK GENERATION AND DETERMINISTIC SOLVER BASELINE
+
+            # START: AGENT STATE SNAPSHOT BEFORE SELECTION
             weights_before = compute_weights_by_agent(agents, self._config.selection.metric_weights)
             all_metrics_before = {agent.name: agent.metrics.to_dict() for agent in agents}
+            # END: AGENT STATE SNAPSHOT BEFORE SELECTION
+
+            # START: AGENT SELECTION FOR CURRENT TASK
             selection_outcome = select_agents(
                 agents=agents,
                 metric_weights=self._config.selection.metric_weights,
@@ -64,6 +74,9 @@ class ExperimentRunner:
                 next(agent for agent in agents if agent.name == selected_agent_name)
                 for selected_agent_name in selection_outcome.selected_agents
             ]
+            # END: AGENT SELECTION FOR CURRENT TASK
+
+            # START: TASK-LEVEL RECORD BEFORE MODEL EXECUTION
             append_jsonl(
                 run_paths.tasks_path,
                 {
@@ -74,20 +87,26 @@ class ExperimentRunner:
                     "selection": selection_outcome.to_dict(),
                 },
             )
+            # END: TASK-LEVEL RECORD BEFORE MODEL EXECUTION
 
+            # START: SELECTED AGENT EXECUTION, EVALUATION, AND STAGED UPDATES
             agent_attempts: list[dict[str, object]] = []
             pending_updates: list[tuple[AgentState, AgentMetrics, AgentMetrics]] = []
             for selected_agent in selected_agents:
+                # START: SINGLE AGENT ATTEMPT
                 attempt_id += 1
                 metrics_before = selected_agent.metrics
                 backend_error: str | None = None
 
+                # START: MODEL GENERATION CALL
                 try:
                     raw_output = self._agent_runner.run(selected_agent.personality, task)
                 except Exception as exc:  # pragma: no cover - exercised in real backend runs
                     raw_output = ""
                     backend_error = str(exc)
+                # END: MODEL GENERATION CALL
 
+                # START: DETERMINISTIC VERIFICATION AND SCORE COMPUTATION
                 verification_result = parse_and_verify_output(
                     raw_output=raw_output,
                     task=task,
@@ -102,6 +121,9 @@ class ExperimentRunner:
                     defaults=self._config.metrics,
                     rules=self._config.updates,
                 )
+                # END: DETERMINISTIC VERIFICATION AND SCORE COMPUTATION
+
+                # START: STAGE METRIC UPDATES UNTIL ALL SELECTED AGENTS FINISH
                 pending_updates.append((selected_agent, metrics_before, metrics_after))
                 agent_attempts.append(
                     {
@@ -120,14 +142,22 @@ class ExperimentRunner:
                         "had_failure": bool(backend_error) or bool(verification_result.failure_types),
                     }
                 )
+                # END: STAGE METRIC UPDATES UNTIL ALL SELECTED AGENTS FINISH
+                # END: SINGLE AGENT ATTEMPT
+            # END: SELECTED AGENT EXECUTION, EVALUATION, AND STAGED UPDATES
 
+            # START: APPLY STAGED METRIC UPDATES AFTER ALL SELECTED AGENTS FINISH
             for selected_agent, _, metrics_after in pending_updates:
                 selected_agent.metrics = metrics_after
                 selected_agent.interactions += 1
+            # END: APPLY STAGED METRIC UPDATES AFTER ALL SELECTED AGENTS FINISH
 
+            # START: AGENT STATE SNAPSHOT AFTER EVALUATION
             weights_after = compute_weights_by_agent(agents, self._config.selection.metric_weights)
             all_metrics_after = {agent.name: agent.metrics.to_dict() for agent in agents}
+            # END: AGENT STATE SNAPSHOT AFTER EVALUATION
 
+            # START: ITERATION LOGGING WITH BEFORE AND AFTER STATES
             logger.log(
                 {
                     "iteration": iteration,
@@ -142,7 +172,10 @@ class ExperimentRunner:
                     "agent_attempts": agent_attempts,
                 }
             )
+            # END: ITERATION LOGGING WITH BEFORE AND AFTER STATES
+        # END: MAIN EXPERIMENT LOOP
 
+        # START: POST-RUN SUMMARY AND PLOT GENERATION
         write_summary(
             log_path=run_paths.log_path,
             output_path=run_paths.summary_path,
@@ -151,6 +184,7 @@ class ExperimentRunner:
         )
         if self._config.analysis.generate_after_run:
             generate_plots(log_path=run_paths.log_path, output_dir=run_paths.analysis_dir)
+        # END: POST-RUN SUMMARY AND PLOT GENERATION
         return run_paths
 
     def _build_run_metadata(self, run_id: str, agents: list[AgentState]) -> dict[str, object]:
@@ -181,6 +215,7 @@ class ExperimentRunner:
         }
 
     def _create_agents(self) -> list[AgentState]:
+        # START: PERSONALITY LOADING AND AGENT DUPLICATION
         personalities_dir = Path(self._config.personalities_dir)
         personality_names = sorted(path.stem for path in personalities_dir.glob("*.md"))
         sampling_profiles = load_sampling_profiles(
@@ -201,15 +236,17 @@ class ExperimentRunner:
                 agents.append(AgentState(name=agent_name, personality=personality, metrics=initial_metrics))
         if not agents:
             raise ValueError("No agents were created; check personalities and duplication settings")
+        # END: PERSONALITY LOADING AND AGENT DUPLICATION
         return agents
 
     def _create_run_paths(self) -> RunPaths:
+        # START: RUN DIRECTORY NAMING AND OUTPUT PATH RESOLUTION
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         output_root = ensure_directory(self._config.paths.output_root)
         run_name = f"{self._slugify_name(self._config.experiment_name)}_{timestamp}"
         run_dir = ensure_directory(Path(output_root) / self._config.paths.runs_dirname / run_name)
         analysis_dir = ensure_directory(run_dir / self._config.paths.analysis_dirname)
-        return RunPaths(
+        paths = RunPaths(
             run_dir=str(run_dir),
             log_path=str(run_dir / self._config.paths.logs_filename),
             tasks_path=str(run_dir / self._config.paths.tasks_filename),
@@ -218,6 +255,8 @@ class ExperimentRunner:
             summary_path=str(run_dir / self._config.paths.summary_filename),
             config_snapshot_path=str(run_dir / self._config.paths.config_snapshot_filename),
         )
+        # END: RUN DIRECTORY NAMING AND OUTPUT PATH RESOLUTION
+        return paths
 
     def _slugify_name(self, value: str) -> str:
         cleaned = "".join(character.lower() if character.isalnum() else "_" for character in value.strip())

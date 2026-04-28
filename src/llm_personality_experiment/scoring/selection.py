@@ -24,10 +24,13 @@ def compute_weights_by_agent(
 ) -> dict[str, float]:
     """Compute the current selection weights for all agents."""
 
-    return {
+    # START: WEIGHT COMPUTATION FOR ALL AGENTS
+    weights_by_agent = {
         agent.name: compute_weight(agent.metrics.to_dict(), metric_weights)
         for agent in agents
     }
+    # END: WEIGHT COMPUTATION FOR ALL AGENTS
+    return weights_by_agent
 
 
 def compute_probabilities(weights: dict[str, float]) -> dict[str, float]:
@@ -52,12 +55,19 @@ def select_agents(
     if agents_per_task > len(agents):
         raise ValueError("agents_per_task cannot exceed the number of available agents")
 
+    # START: PREPARE WEIGHTS AND PROBABILITIES FOR SELECTION
     weights = compute_weights_by_agent(agents, metric_weights)
     probabilities = compute_probabilities(weights)
+    # END: PREPARE WEIGHTS AND PROBABILITIES FOR SELECTION
+
+    # START: EPSILON EXPLORATION VS WEIGHTED EXPLOITATION
     if rng.random() < epsilon:
+        # START: EPSILON EXPLORATION BRANCH
         selected_agents = tuple(agent.name for agent in rng.sample(agents, k=agents_per_task))
         explored = True
+        # END: EPSILON EXPLORATION BRANCH
     else:
+        # START: WEIGHTED SAMPLING WITHOUT REPLACEMENT
         remaining_names = [agent.name for agent in agents]
         selected_names: list[str] = []
         while len(selected_names) < agents_per_task:
@@ -71,6 +81,8 @@ def select_agents(
             remaining_names.remove(chosen_name)
         selected_agents = tuple(selected_names)
         explored = False
+        # END: WEIGHTED SAMPLING WITHOUT REPLACEMENT
+    # END: EPSILON EXPLORATION VS WEIGHTED EXPLOITATION
 
     return SelectionOutcome(
         selected_agents=selected_agents,

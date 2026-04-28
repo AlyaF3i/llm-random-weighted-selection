@@ -17,6 +17,7 @@ class TaskGenerator:
     def generate(self, iteration: int, scenario_type: ScenarioType | None = None) -> MathExamTask:
         """Generate one validated task for the given iteration."""
 
+        # START: TASK GENERATION FOR ONE ITERATION
         rng = create_rng(self._config.seed + (iteration * 7919))
         chosen_scenario = scenario_type or self._sample_scenario(rng)
         question_count = rng.randint(
@@ -41,8 +42,11 @@ class TaskGenerator:
             questions=questions,
             total_points=total_points,
         )
+        # END: TASK GENERATION FOR ONE ITERATION
+
         if self._config.task_generation.include_reference_answers:
-            return MathExamTask(
+            # START: REFERENCE ANSWER INJECTION FOR SHOWCASE TASKS
+            task_with_reference_answers = MathExamTask(
                 task_id=task.task_id,
                 iteration=task.iteration,
                 seed=task.seed,
@@ -56,6 +60,8 @@ class TaskGenerator:
                 total_points=task.total_points,
                 reference_answers=solve_task(task).answer_key,
             )
+            # END: REFERENCE ANSWER INJECTION FOR SHOWCASE TASKS
+            return task_with_reference_answers
         return task
 
     def _sample_scenario(self, rng: object) -> ScenarioType:

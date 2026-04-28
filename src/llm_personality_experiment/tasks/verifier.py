@@ -67,6 +67,7 @@ def parse_and_verify_output(
 ) -> VerificationResult:
     """Parse a raw model string and verify it against the answer key."""
 
+    # START: STRICT JSON PARSING
     try:
         payload = json.loads(raw_output)
         json_valid = True
@@ -87,7 +88,9 @@ def parse_and_verify_output(
             reliability=0.0,
             failure_types=("invalid_json",),
         )
+    # END: STRICT JSON PARSING
 
+    # START: STRICT SCHEMA VALIDATION
     try:
         parsed = ModelResponse.model_validate(payload)
         schema_valid = True
@@ -108,7 +111,9 @@ def parse_and_verify_output(
             reliability=0.5,
             failure_types=("schema_validation_failed",),
         )
+    # END: STRICT SCHEMA VALIDATION
 
+    # START: ANSWER NORMALIZATION AND QUESTION-ID VALIDATION
     answers_by_question: dict[str, str] = {}
     failure_types: list[str] = []
     for item in parsed.submission.answers:
@@ -120,7 +125,9 @@ def parse_and_verify_output(
             failure_types.append("unknown_question_id")
             continue
         answers_by_question[normalized_question_id] = _normalize_answer(item.answer)
+    # END: ANSWER NORMALIZATION AND QUESTION-ID VALIDATION
 
+    # START: DETERMINISTIC EXAM SCORING
     answered_count = len(answers_by_question)
     correct_count = sum(
         1
@@ -130,12 +137,15 @@ def parse_and_verify_output(
     score_earned = correct_count * (solution.total_points // max(solution.question_count, 1))
     correctness_score = score_earned / solution.total_points if solution.total_points else 0.0
     completeness_score = answered_count / solution.question_count if solution.question_count else 0.0
+    # END: DETERMINISTIC EXAM SCORING
 
+    # START: FEEDBACK SUPPORTIVENESS AND RELIABILITY SCORING
     feedback = parsed.submission.feedback.strip()
     if not feedback:
         failure_types.append("missing_feedback")
     supportiveness_score = _score_feedback(feedback, evaluation_config)
     reliability = 1.0 if schema_valid else 0.0
+    # END: FEEDBACK SUPPORTIVENESS AND RELIABILITY SCORING
 
     return VerificationResult(
         json_valid=json_valid,
