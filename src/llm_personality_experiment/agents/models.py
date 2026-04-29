@@ -34,6 +34,7 @@ class AgentState:
     personality: PersonalityDefinition
     metrics: AgentMetrics
     interactions: int = 0
+    selection_weight: float = 1.0
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -41,4 +42,5 @@ class AgentState:
             "personality": self.personality.to_dict(),
             "metrics": self.metrics.to_dict(),
             "interactions": self.interactions,
+            "selection_weight": self.selection_weight,
         }

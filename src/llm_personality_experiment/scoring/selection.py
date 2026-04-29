@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import math
 import random
 
 from llm_personality_experiment.agents.models import AgentState
-from llm_personality_experiment.scoring.models import SelectionOutcome
+from llm_personality_experiment.scoring.models import ScoreObservation, SelectionOutcome
 
 
 def compute_weight(metrics: dict[str, float], metric_weights: dict[str, float]) -> float:
@@ -21,14 +22,23 @@ def compute_weight(metrics: dict[str, float], metric_weights: dict[str, float]) 
 def compute_weights_by_agent(
     agents: list[AgentState],
     metric_weights: dict[str, float],
+    weight_update_rule: str = "metric_average",
 ) -> dict[str, float]:
     """Compute the current selection weights for all agents."""
 
     # START: WEIGHT COMPUTATION FOR ALL AGENTS
-    weights_by_agent = {
-        agent.name: compute_weight(agent.metrics.to_dict(), metric_weights)
-        for agent in agents
-    }
+    if weight_update_rule == "metric_average":
+        weights_by_agent = {
+            agent.name: compute_weight(agent.metrics.to_dict(), metric_weights)
+            for agent in agents
+        }
+    elif weight_update_rule == "exponential":
+        weights_by_agent = {
+            agent.name: max(float(agent.selection_weight), 1e-12)
+            for agent in agents
+        }
+    else:
+        raise ValueError(f"Unsupported weight_update_rule: {weight_update_rule}")
     # END: WEIGHT COMPUTATION FOR ALL AGENTS
     return weights_by_agent
 
@@ -49,6 +59,7 @@ def select_agents(
     epsilon: float,
     agents_per_task: int,
     rng: random.Random,
+    weight_update_rule: str = "metric_average",
 ) -> SelectionOutcome:
     """Select `k` agents by epsilon-greedy weighted random sampling without replacement."""
 
@@ -56,7 +67,7 @@ def select_agents(
         raise ValueError("agents_per_task cannot exceed the number of available agents")
 
     # START: PREPARE WEIGHTS AND PROBABILITIES FOR SELECTION
-    weights = compute_weights_by_agent(agents, metric_weights)
+    weights = compute_weights_by_agent(agents, metric_weights, weight_update_rule=weight_update_rule)
     probabilities = compute_probabilities(weights)
     # END: PREPARE WEIGHTS AND PROBABILITIES FOR SELECTION
 
@@ -90,3 +101,41 @@ def select_agents(
         probabilities=probabilities,
         weights=weights,
     )
+
+
+def initialize_exponential_weights(
+    agents: list[AgentState],
+    metric_weights: dict[str, float],
+) -> None:
+    """Initialize direct selection weights from the current metric state."""
+
+    initial_weights = compute_weights_by_agent(agents, metric_weights, weight_update_rule="metric_average")
+    total_weight = sum(initial_weights.values())
+    if total_weight <= 0:
+        uniform_weight = 1.0 / len(agents)
+        for agent in agents:
+            agent.selection_weight = uniform_weight
+        return
+
+    for agent in agents:
+        agent.selection_weight = initial_weights[agent.name] / total_weight
+
+
+def update_exponential_weights(
+    agents: list[AgentState],
+    observations_by_agent: dict[str, ScoreObservation],
+    metric_weights: dict[str, float],
+    eta: float,
+) -> None:
+    """Apply multiplicative exponential updates and renormalize the selection weights."""
+
+    updated_values: dict[str, float] = {}
+    for agent in agents:
+        reward = 0.0
+        if agent.name in observations_by_agent:
+            reward = compute_weight(observations_by_agent[agent.name].to_dict(), metric_weights)
+        updated_values[agent.name] = max(agent.selection_weight, 1e-12) * math.exp(eta * reward)
+
+    normalized_weights = compute_probabilities(updated_values)
+    for agent in agents:
+        agent.selection_weight = normalized_weights[agent.name]

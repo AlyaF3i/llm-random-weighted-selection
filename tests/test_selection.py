@@ -7,8 +7,15 @@ import pytest
 
 from llm_personality_experiment.agents.models import AgentState, PersonalityDefinition
 from llm_personality_experiment.agents.sampling import SamplingParameters
-from llm_personality_experiment.scoring.models import AgentMetrics
-from llm_personality_experiment.scoring.selection import compute_probabilities, compute_weight, select_agents
+from llm_personality_experiment.scoring.models import AgentMetrics, ScoreObservation
+from llm_personality_experiment.scoring.selection import (
+    compute_probabilities,
+    compute_weight,
+    compute_weights_by_agent,
+    initialize_exponential_weights,
+    select_agents,
+    update_exponential_weights,
+)
 
 
 def _agent(name: str, correctness: float) -> AgentState:
@@ -73,3 +80,53 @@ def test_select_agents_can_explore() -> None:
 
     assert outcome.explored is True
     assert set(outcome.selected_agents) == {"a", "b"}
+
+
+def test_compute_weights_by_agent_uses_stored_selection_weight_for_exponential_rule() -> None:
+    agents = [_agent("a", 0.2), _agent("b", 0.9)]
+    agents[0].selection_weight = 0.25
+    agents[1].selection_weight = 0.75
+
+    weights = compute_weights_by_agent(
+        agents=agents,
+        metric_weights={
+            "correctness": 1.0,
+            "completeness": 0.0,
+            "supportiveness": 0.0,
+            "reliability": 0.0,
+        },
+        weight_update_rule="exponential",
+    )
+
+    assert weights == {"a": 0.25, "b": 0.75}
+
+
+def test_exponential_weight_update_increases_better_agent_share() -> None:
+    agents = [_agent("a", 0.5), _agent("b", 0.5)]
+    initialize_exponential_weights(
+        agents=agents,
+        metric_weights={
+            "correctness": 1.0,
+            "completeness": 0.0,
+            "supportiveness": 0.0,
+            "reliability": 0.0,
+        },
+    )
+
+    update_exponential_weights(
+        agents=agents,
+        observations_by_agent={
+            "a": ScoreObservation(correctness=1.0, completeness=0.0, supportiveness=0.0, reliability=0.0),
+            "b": ScoreObservation(correctness=0.0, completeness=0.0, supportiveness=0.0, reliability=0.0),
+        },
+        metric_weights={
+            "correctness": 1.0,
+            "completeness": 0.0,
+            "supportiveness": 0.0,
+            "reliability": 0.0,
+        },
+        eta=1.5,
+    )
+
+    assert agents[0].selection_weight > agents[1].selection_weight
+    assert sum(agent.selection_weight for agent in agents) == pytest.approx(1.0)

@@ -6,6 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
+from llm_personality_experiment.analysis.comparison import compare_runs
 from llm_personality_experiment.analysis.plots import generate_plots
 from llm_personality_experiment.analysis.replay import launch_weight_replay
 from llm_personality_experiment.analysis.summary import write_summary
@@ -28,6 +29,11 @@ def main() -> None:
     analyze_parser = subparsers.add_parser("analyze", help="Analyze an existing run directory")
     analyze_parser.add_argument("--run-dir", required=True, help="Path to a previous run directory")
     analyze_parser.add_argument("--aggregate-every", type=int, default=10, help="Summary aggregation window")
+
+    compare_parser = subparsers.add_parser("compare-runs", help="Compare multiple existing run directories")
+    compare_parser.add_argument("--run-dir", action="append", required=True, help="Path to a run directory; pass twice or more")
+    compare_parser.add_argument("--label", action="append", help="Optional label matching each run directory")
+    compare_parser.add_argument("--output-dir", required=True, help="Directory where comparison plots will be written")
 
     replay_parser = subparsers.add_parser("replay", help="Replay one run live with animated weight updates")
     replay_parser.add_argument("--run-dir", required=True, help="Path to a previous run directory")
@@ -76,6 +82,11 @@ def main() -> None:
         )
         generated_plots = [str(path) for path in generate_plots(log_path=log_path, output_dir=analysis_dir)]
         print(json.dumps({"summary": summary, "plots": generated_plots}, indent=2, sort_keys=True))
+        return
+
+    if args.command == "compare-runs":
+        comparison = compare_runs(run_dirs=args.run_dir, output_dir=args.output_dir, labels=args.label)
+        print(json.dumps(comparison, indent=2, sort_keys=True))
         return
 
     if args.command == "generate-sample-tasks":

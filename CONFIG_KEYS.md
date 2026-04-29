@@ -71,6 +71,8 @@ Schema source in code:
 | --- | --- | --- |
 | `selection.epsilon` | float between `0` and `1` | Exploration probability. If the random draw falls below `epsilon`, the system selects agents uniformly at random instead of by weights. |
 | `selection.agents_per_task` | integer | Number of agents invited to answer each task. |
+| `selection.weight_update_rule` | string | Selection-weight strategy. `metric_average` uses the weighted average of the tracked metrics. `exponential` keeps a direct selection weight per agent and updates it multiplicatively after each iteration. |
+| `selection.exponential_eta` | float | Aggressiveness parameter for exponential selection-weight updates. Larger values make the weights separate faster. |
 | `selection.metric_weights` | mapping | Weights used to collapse the four tracked metrics into one selection weight for sampling. |
 | `selection.metric_weights.correctness` | float | Importance of academic correctness in selection. This is the strongest signal in the current showcase task. |
 | `selection.metric_weights.completeness` | float | Importance of answering all questions. |

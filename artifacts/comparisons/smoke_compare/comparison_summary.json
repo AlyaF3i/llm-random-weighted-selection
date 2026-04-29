@@ -1,0 +1,53 @@
+{
+  "plots": [
+    "artifacts\\comparisons\\smoke_compare\\family_final_weights_comparison.png",
+    "artifacts\\comparisons\\smoke_compare\\family_full_credit_rates_comparison.png",
+    "artifacts\\comparisons\\smoke_compare\\family_selection_counts_comparison.png",
+    "artifacts\\comparisons\\smoke_compare\\family_weight_trajectories_comparison.png",
+    "artifacts\\comparisons\\smoke_compare\\task_correctness_comparison.png"
+  ],
+  "runs": [
+    {
+      "family_final_weights": {
+        "always_correct": 0.7470418129968925,
+        "always_nice_teacher": 0.4205327468799339,
+        "sometimes_correct": 0.6096287953091096
+      },
+      "family_full_credit_rates": {
+        "always_correct": 0.967741935483871,
+        "always_nice_teacher": 0.0,
+        "sometimes_correct": 0.47058823529411764
+      },
+      "family_selection_counts": {
+        "always_correct": 31,
+        "always_nice_teacher": 25,
+        "sometimes_correct": 34
+      },
+      "label": "baseline",
+      "model_name": "qwen3.5:9b",
+      "run_dir": "artifacts\\runs\\weight_showcase_qwen_9b_20260426T160942Z",
+      "selection_rule": null
+    },
+    {
+      "family_final_weights": {
+        "always_correct": 0.7470418129968925,
+        "always_nice_teacher": 0.4205327468799339,
+        "sometimes_correct": 0.6096287953091096
+      },
+      "family_full_credit_rates": {
+        "always_correct": 0.967741935483871,
+        "always_nice_teacher": 0.0,
+        "sometimes_correct": 0.47058823529411764
+      },
+      "family_selection_counts": {
+        "always_correct": 31,
+        "always_nice_teacher": 25,
+        "sometimes_correct": 34
+      },
+      "label": "duplicate",
+      "model_name": "qwen3.5:9b",
+      "run_dir": "artifacts\\runs\\weight_showcase_qwen_9b_20260426T160942Z",
+      "selection_rule": null
+    }
+  ]
+}

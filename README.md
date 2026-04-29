@@ -25,6 +25,8 @@ src/llm_personality_experiment/
   utils/           Seed and I/O helpers
 configs/
   easy_qwen.yaml   Main experiment config for local Ollama runs
+  correctness_only_metric_average.yaml  Correctness-only baseline with metric-derived weights
+  correctness_only_exponential.yaml  Correctness-only run with exponential weight updates
   personality_sampling.json  Per-personality sampling settings
 personalities/
   *.md             Personality instruction files loaded at runtime
@@ -72,10 +74,40 @@ Run a full experiment:
 python -m llm_personality_experiment.cli run --config configs\easy_qwen.yaml
 ```
 
+Run the two comparison experiments:
+
+```powershell
+python -m llm_personality_experiment.cli run --config configs\correctness_only_metric_average.yaml
+python -m llm_personality_experiment.cli run --config configs\correctness_only_exponential.yaml
+```
+
+Or run both experiments plus the comparison charts in one step:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\run_correctness_comparison.ps1
+```
+
+If you want to use a specific Python executable instead of the active shell environment:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\run_correctness_comparison.ps1 -PythonExe C:\Users\user\miniconda3\envs\llm-personality-exp\python.exe
+```
+
 Analyze an existing run:
 
 ```powershell
 python -m llm_personality_experiment.cli analyze --run-dir artifacts\runs\<run_id> --aggregate-every 10
+```
+
+Compare two completed runs:
+
+```powershell
+python -m llm_personality_experiment.cli compare-runs `
+  --run-dir artifacts\runs\<metric_average_run_id> `
+  --run-dir artifacts\runs\<exponential_run_id> `
+  --label metric_average `
+  --label exponential `
+  --output-dir artifacts\comparisons\correctness_only_comparison
 ```
 
 Replay a run live:
@@ -199,6 +231,10 @@ Normalization currently clamps each metric into `[0, 1]`.
 
 ## Selection Method
 
+The project supports two selection-weight rules.
+
+### Metric-Derived Weights
+
 Each agent has a weight computed from the configured metric weights.
 
 Let:
@@ -228,6 +264,25 @@ Selection is epsilon-greedy:
 
 The config key `selection.agents_per_task` controls how many agents are invited to the same task. Selection is done without replacement, so a task can be attempted by `k` distinct agents in the same iteration.
 
+### Exponential Weights
+
+When `selection.weight_update_rule: exponential`, the project keeps a direct selection weight for each agent and updates it multiplicatively after each iteration.
+
+For each selected agent:
+
+```text
+reward_i = weighted_average(normalized_observation_i, metric_weights)
+w_i <- w_i * exp(eta * reward_i)
+```
+
+After updating selected agents, all agent weights are renormalized so they sum to `1.0`.
+
+This means:
+
+- stronger observed reward increases future selection probability multiplicatively
+- weaker agents fall behind through normalization
+- `selection.exponential_eta` controls how aggressively the weights separate
+
 This creates:
 
 - one generated exam per iteration
@@ -236,7 +291,7 @@ This creates:
 - one `tasks.jsonl` record per iteration
 - an `agent_attempts` array inside each iteration record
 
-## Update Equations
+## Metric Update Equations
 
 Each metric value `x_t` is updated from observation `s_t` relative to its configured baseline `b`.
 
@@ -261,6 +316,8 @@ else:
 Where `clamp` restricts the result to `[min_value, max_value]`.
 
 This allows configurable recovery and penalty behavior above and below baseline.
+
+Even when `selection.weight_update_rule: exponential` is used, the metric state is still updated with these equations for logging and analysis. The difference is that future selection probabilities come from the direct exponential weights instead of being recomputed from metric state.
 
 ## Personality Duplication
 
@@ -377,6 +434,8 @@ Key config areas:
 - `experiment_name`: label used in the output folder name and stored in run metadata
 - `backend`: Ollama model, URL, timeout, temperature, fallback `p_sample`, fallback `k_sample`
 - `selection`: epsilon, metric weights, `agents_per_task`
+- `selection.weight_update_rule`: choose between `metric_average` and `exponential`
+- `selection.exponential_eta`: exponential update strength when the exponential rule is enabled
 - `metrics`: initial values, baselines, min/max clamp
 - `updates`: above-baseline and below-baseline rates
 - `task_generation`: exam size, grade label, operation ranges, mixed pool

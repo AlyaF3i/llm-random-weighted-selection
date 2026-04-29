@@ -1,0 +1,91 @@
+experiment_name: correctness_only_metric_average
+seed: 20260405
+iterations: 30
+personalities_dir: personalities
+personalities:
+  duplication:
+    always_correct: 2
+    always_nice_teacher: 2
+    sometimes_correct: 2
+  sampling_parameters_path: configs/personality_sampling.json
+paths:
+  output_root: artifacts
+  runs_dirname: runs
+  analysis_dirname: analysis
+  logs_filename: experiment.jsonl
+  tasks_filename: tasks.jsonl
+  metadata_filename: run_metadata.json
+  config_snapshot_filename: config_snapshot.yaml
+  summary_filename: summary.json
+backend:
+  provider: ollama
+  base_url: http://127.0.0.1:11434
+  model_name: qwen3.5:9b
+  timeout_seconds: 180.0
+  temperature: 0.0
+  p_sample: 0.9
+  k_sample: 40
+selection:
+  epsilon: 0.10
+  agents_per_task: 3
+  weight_update_rule: metric_average
+  exponential_eta: 1.25
+  metric_weights:
+    correctness: 1.0
+    completeness: 0.0
+    supportiveness: 0.0
+    reliability: 0.0
+metrics:
+  initial:
+    correctness: 0.50
+    completeness: 0.60
+    supportiveness: 0.55
+    reliability: 0.60
+  baseline:
+    correctness: 0.50
+    completeness: 0.50
+    supportiveness: 0.50
+    reliability: 0.50
+  min_value: 0.0
+  max_value: 1.0
+updates:
+  above_baseline:
+    increase_rate: 0.04
+    decrease_rate: 0.07
+  below_baseline:
+    increase_rate: 0.10
+    decrease_rate: 0.18
+task_generation:
+  grade_label: showcase warmup
+  questions_per_exam_min: 1
+  questions_per_exam_max: 1
+  points_per_question: 1
+  include_reference_answers: true
+  operations:
+    addition:
+      min_operand: 1
+      max_operand: 4
+      non_negative_only: true
+    subtraction:
+      min_operand: 1
+      max_operand: 4
+      non_negative_only: true
+    multiplication:
+      min_operand: 1
+      max_operand: 4
+      non_negative_only: true
+  mixed_operation_pool: [addition]
+evaluation:
+  feedback:
+    positive_keywords: [great, good job, well done, proud, excellent, nice work]
+    coaching_keywords: [keep practicing, try again, check, next time, keep going]
+    banned_keywords: [bad, stupid, lazy, terrible, fail]
+    min_words: 2
+scenario_mix:
+  addition: 1.0
+  subtraction: 0.0
+  multiplication: 0.0
+  mixed_review: 0.0
+analysis:
+  aggregate_every: 6
+  generate_after_run: true

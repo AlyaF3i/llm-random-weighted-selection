@@ -15,10 +15,15 @@ from llm_personality_experiment.analysis.summary import write_summary
 from llm_personality_experiment.config import ExperimentConfig, dump_config
 from llm_personality_experiment.experiment.models import RunPaths
 from llm_personality_experiment.logging_utils.jsonl_logger import JSONLExperimentLogger
-from llm_personality_experiment.scoring.models import AgentMetrics
+from llm_personality_experiment.scoring.models import AgentMetrics, ScoreObservation
 from llm_personality_experiment.scoring.normalization import normalize_observation
 from llm_personality_experiment.scoring.scoring import compute_raw_scores
-from llm_personality_experiment.scoring.selection import compute_weights_by_agent, select_agents
+from llm_personality_experiment.scoring.selection import (
+    compute_weights_by_agent,
+    initialize_exponential_weights,
+    select_agents,
+    update_exponential_weights,
+)
 from llm_personality_experiment.scoring.updates import update_metrics
 from llm_personality_experiment.tasks.generator import TaskGenerator
 from llm_personality_experiment.tasks.solver import solve_task
@@ -45,6 +50,8 @@ class ExperimentRunner:
         dump_config(self._config, run_paths.config_snapshot_path)
         logger = JSONLExperimentLogger(run_paths.log_path)
         agents = self._create_agents()
+        if self._config.selection.weight_update_rule == "exponential":
+            initialize_exponential_weights(agents, self._config.selection.metric_weights)
         run_metadata = self._build_run_metadata(run_id=Path(run_paths.run_dir).name, agents=agents)
         write_json(run_paths.metadata_path, run_metadata)
         attempt_id = 0
@@ -58,7 +65,11 @@ class ExperimentRunner:
             # END: TASK GENERATION AND DETERMINISTIC SOLVER BASELINE
 
             # START: AGENT STATE SNAPSHOT BEFORE SELECTION
-            weights_before = compute_weights_by_agent(agents, self._config.selection.metric_weights)
+            weights_before = compute_weights_by_agent(
+                agents,
+                self._config.selection.metric_weights,
+                weight_update_rule=self._config.selection.weight_update_rule,
+            )
             all_metrics_before = {agent.name: agent.metrics.to_dict() for agent in agents}
             # END: AGENT STATE SNAPSHOT BEFORE SELECTION
 
@@ -69,6 +80,7 @@ class ExperimentRunner:
                 epsilon=self._config.selection.epsilon,
                 agents_per_task=self._config.selection.agents_per_task,
                 rng=self._selection_rng,
+                weight_update_rule=self._config.selection.weight_update_rule,
             )
             selected_agents = [
                 next(agent for agent in agents if agent.name == selected_agent_name)
@@ -92,6 +104,7 @@ class ExperimentRunner:
             # START: SELECTED AGENT EXECUTION, EVALUATION, AND STAGED UPDATES
             agent_attempts: list[dict[str, object]] = []
             pending_updates: list[tuple[AgentState, AgentMetrics, AgentMetrics]] = []
+            selected_observations: dict[str, ScoreObservation] = {}
             for selected_agent in selected_agents:
                 # START: SINGLE AGENT ATTEMPT
                 attempt_id += 1
@@ -115,6 +128,7 @@ class ExperimentRunner:
                 )
                 raw_scores = compute_raw_scores(solver_result, verification_result)
                 normalized_scores = normalize_observation(raw_scores)
+                selected_observations[selected_agent.name] = normalized_scores
                 metrics_after = update_metrics(
                     current=metrics_before,
                     observation=normalized_scores,
@@ -150,10 +164,21 @@ class ExperimentRunner:
             for selected_agent, _, metrics_after in pending_updates:
                 selected_agent.metrics = metrics_after
                 selected_agent.interactions += 1
+            if self._config.selection.weight_update_rule == "exponential":
+                update_exponential_weights(
+                    agents=agents,
+                    observations_by_agent=selected_observations,
+                    metric_weights=self._config.selection.metric_weights,
+                    eta=self._config.selection.exponential_eta,
+                )
             # END: APPLY STAGED METRIC UPDATES AFTER ALL SELECTED AGENTS FINISH
 
             # START: AGENT STATE SNAPSHOT AFTER EVALUATION
-            weights_after = compute_weights_by_agent(agents, self._config.selection.metric_weights)
+            weights_after = compute_weights_by_agent(
+                agents,
+                self._config.selection.metric_weights,
+                weight_update_rule=self._config.selection.weight_update_rule,
+            )
             all_metrics_after = {agent.name: agent.metrics.to_dict() for agent in agents}
             # END: AGENT STATE SNAPSHOT AFTER EVALUATION
 

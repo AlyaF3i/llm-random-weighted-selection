@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
 
 import yaml
 from pydantic import BaseModel, Field, model_validator
@@ -44,6 +45,8 @@ class SelectionConfig(BaseModel):
     epsilon: float = Field(ge=0.0, le=1.0)
     agents_per_task: int = Field(ge=1)
     metric_weights: dict[str, float]
+    weight_update_rule: Literal["metric_average", "exponential"] = "metric_average"
+    exponential_eta: float = Field(default=1.0, gt=0.0)
 
     @model_validator(mode="after")
     def validate_weights(self) -> "SelectionConfig":
